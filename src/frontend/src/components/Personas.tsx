@@ -1,76 +1,87 @@
 import { useState } from 'react';
-import { useVoicePersonas, useCreateVoicePersona, useDeleteVoicePersona } from '../hooks/useQueries';
-import { VoiceInput } from './VoiceInput';
-import { Users, Trash2, Loader2, Plus, Mic, Play } from 'lucide-react';
+import { Plus, Trash2, Mic, Play } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { VoiceInput } from './VoiceInput';
+import { useVoicePersonas, useCreateVoicePersona, useDeleteVoicePersona } from '../hooks/useQueries';
 import { ExternalBlob } from '../backend';
 import { toast } from 'sonner';
 
 interface PersonasProps {
+  userId: string;
   onPersonaSelect?: (personaId: string, voiceSampleId: string) => void;
 }
 
-export function Personas({ onPersonaSelect }: PersonasProps) {
-  const userId = 'user'; // In production, this would come from authentication
-  const { data: personas, isLoading, error } = useVoicePersonas(userId);
-  const createPersona = useCreateVoicePersona();
-  const deletePersona = useDeleteVoicePersona();
-  const [isCreating, setIsCreating] = useState(false);
+export function Personas({ userId, onPersonaSelect }: PersonasProps) {
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [personaName, setPersonaName] = useState('');
   const [voiceSampleId, setVoiceSampleId] = useState<string | null>(null);
   const [voiceBlob, setVoiceBlob] = useState<ExternalBlob | null>(null);
 
+  const { data: personas = [], isLoading } = useVoicePersonas(userId);
+  const createPersona = useCreateVoicePersona();
+  const deletePersona = useDeleteVoicePersona();
+
   const handleVoiceComplete = (id: string, blob: ExternalBlob) => {
+    console.log('[Personas] Voice sample uploaded:', id);
     setVoiceSampleId(id);
     setVoiceBlob(blob);
   };
 
   const handleCreatePersona = async () => {
-    if (!personaName.trim()) {
-      toast.error('Please enter a persona name');
-      return;
-    }
-    if (!voiceSampleId) {
-      toast.error('Please record or upload a voice sample');
+    if (!personaName.trim() || !voiceSampleId) {
+      toast.error('Please provide a name and voice sample');
       return;
     }
 
     try {
-      const personaId = `persona-${Date.now()}`;
+      const personaId = `persona_${Date.now()}`;
+
+      console.log('[Personas] Creating persona:', { personaId, userId, personaName, voiceSampleId });
+
       await createPersona.mutateAsync({
         id: personaId,
         userId,
         name: personaName,
         voiceSampleId,
       });
-      toast.success('Persona created successfully!');
-      setIsCreating(false);
+
+      console.log('[Personas] Persona created successfully');
+      toast.success('Voice persona created successfully!');
+      setIsCreateDialogOpen(false);
       setPersonaName('');
       setVoiceSampleId(null);
       setVoiceBlob(null);
-    } catch (err) {
-      toast.error('Failed to create persona');
-      console.error(err);
+    } catch (error) {
+      console.error('[Personas] Error creating persona:', error);
+      toast.error('Failed to create voice persona');
     }
   };
 
-  const handleDeletePersona = async (personaId: string, personaName: string) => {
-    if (!confirm(`Are you sure you want to delete "${personaName}"?`)) {
-      return;
-    }
-
+  const handleDeletePersona = async (personaId: string) => {
     try {
+      console.log('[Personas] Deleting persona:', personaId);
       await deletePersona.mutateAsync({ personaId, userId });
-      toast.success('Persona deleted');
-    } catch (err) {
-      toast.error('Failed to delete persona');
-      console.error(err);
+      toast.success('Voice persona deleted');
+    } catch (error) {
+      console.error('[Personas] Error deleting persona:', error);
+      toast.error('Delete functionality not yet available');
     }
   };
 
   const handlePersonaClick = (personaId: string, voiceSampleId: string) => {
+    console.log('[Personas] Persona selected:', { personaId, voiceSampleId });
     if (onPersonaSelect) {
       onPersonaSelect(personaId, voiceSampleId);
     }
@@ -78,21 +89,8 @@ export function Personas({ onPersonaSelect }: PersonasProps) {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-          <p className="mt-4 text-muted-foreground">Loading your personas...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="text-center">
-          <p className="text-destructive">Failed to load personas</p>
-        </div>
+      <div className="flex items-center justify-center py-12">
+        <div className="text-muted-foreground">Loading personas...</div>
       </div>
     );
   }
@@ -101,131 +99,100 @@ export function Personas({ onPersonaSelect }: PersonasProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold">Voice Personas</h2>
-          <p className="mt-2 text-muted-foreground">
-            {onPersonaSelect 
-              ? 'Select a persona to start creating or manage your voice samples'
-              : 'Save and manage your voice samples for quick access'}
-          </p>
+          <h2 className="text-2xl font-bold">Voice Personas</h2>
+          <p className="text-muted-foreground">Manage your voice samples for quick access</p>
         </div>
-
-        <Dialog open={isCreating} onOpenChange={setIsCreating}>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <button className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[oklch(0.70_0.20_30)] to-[oklch(0.60_0.22_20)] px-6 py-3 font-semibold text-white transition-all hover:shadow-lg">
-              <Plus className="h-5 w-5" />
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
               Create Persona
-            </button>
+            </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Create New Persona</DialogTitle>
+              <DialogTitle>Create Voice Persona</DialogTitle>
+              <DialogDescription>
+                Give your voice sample a name and record or upload an audio file
+              </DialogDescription>
             </DialogHeader>
-            <div className="space-y-6">
+            <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="persona-name">Persona Name</Label>
                 <Input
                   id="persona-name"
-                  placeholder="e.g., My Singing Voice, Podcast Voice..."
+                  placeholder="e.g., My Voice, Studio Recording"
                   value={personaName}
                   onChange={(e) => setPersonaName(e.target.value)}
                 />
               </div>
-
               <div className="space-y-2">
                 <Label>Voice Sample</Label>
                 <VoiceInput onComplete={handleVoiceComplete} />
               </div>
-
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={() => setIsCreating(false)}
-                  className="rounded-lg border border-border px-6 py-2 font-medium transition-colors hover:bg-accent"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreatePersona}
-                  disabled={createPersona.isPending || !personaName.trim() || !voiceSampleId}
-                  className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[oklch(0.70_0.20_30)] to-[oklch(0.60_0.22_20)] px-6 py-2 font-semibold text-white transition-all hover:shadow-lg disabled:opacity-50"
-                >
-                  {createPersona.isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    'Create Persona'
-                  )}
-                </button>
-              </div>
             </div>
+            <DialogFooter>
+              <Button
+                onClick={handleCreatePersona}
+                disabled={!personaName.trim() || !voiceSampleId || createPersona.isPending}
+              >
+                {createPersona.isPending ? 'Creating...' : 'Create Persona'}
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
-      {!personas || personas.length === 0 ? (
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-              <Users className="h-10 w-10 text-muted-foreground" />
-            </div>
-            <h3 className="mb-2 text-2xl font-bold">No Personas Yet</h3>
-            <p className="text-muted-foreground">
-              Create your first voice persona to get started
+      {personas.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Mic className="h-12 w-12 text-muted-foreground mb-4" />
+            <p className="text-muted-foreground text-center">
+              No voice personas yet. Create one to get started!
             </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {personas.map((persona) => (
-            <div
+            <Card
               key={persona.id}
-              className={`group rounded-xl border-2 border-border bg-card p-6 shadow-lg transition-all hover:border-primary/50 hover:shadow-xl ${
-                onPersonaSelect ? 'cursor-pointer' : ''
-              }`}
-              onClick={() => onPersonaSelect && handlePersonaClick(persona.id, persona.voiceSampleId)}
+              className="cursor-pointer hover:border-primary transition-colors"
+              onClick={() => handlePersonaClick(persona.id, persona.voiceSampleId)}
             >
-              <div className="mb-4 flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="mb-1 text-lg font-bold line-clamp-1">{persona.name}</h3>
-                  <p className="text-sm text-muted-foreground">Voice Sample</p>
-                </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[oklch(0.70_0.20_30)] to-[oklch(0.60_0.22_20)]">
-                  <Mic className="h-5 w-5 text-white" />
-                </div>
-              </div>
-
-              {onPersonaSelect && (
-                <button
-                  className="mb-2 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePersonaClick(persona.id, persona.voiceSampleId);
-                  }}
-                >
-                  <Play className="h-4 w-4" />
-                  Use This Persona
-                </button>
-              )}
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeletePersona(persona.id, persona.name);
-                }}
-                disabled={deletePersona.isPending}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-destructive/50 px-4 py-2 text-sm font-medium text-destructive transition-all hover:bg-destructive/10 disabled:opacity-50"
-              >
-                {deletePersona.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span className="truncate">{persona.name}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeletePersona(persona.id);
+                    }}
+                    className="h-8 w-8"
+                  >
                     <Trash2 className="h-4 w-4" />
-                    Delete
-                  </>
+                  </Button>
+                </CardTitle>
+                <CardDescription>Voice Sample</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {onPersonaSelect && (
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePersonaClick(persona.id, persona.voiceSampleId);
+                    }}
+                  >
+                    <Play className="mr-2 h-4 w-4" />
+                    Use This Persona
+                  </Button>
                 )}
-              </button>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}

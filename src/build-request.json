@@ -1,71 +1,149 @@
 {
   "kind": "build_request",
-  "title": "Fix songs not appearing in library after generation completes",
+  "title": "Fix library save failure for songs and covers",
+  "projectName": "Voice Cover Studio",
   "priority": "high",
   "requirements": [
     {
-      "id": "REQ-38",
-      "text": "Debug and fix the library saving mechanism in App.tsx to ensure songs are correctly saved to the backend after both cover mode and generation mode processing completes",
+      "id": "REQ-52",
+      "text": "Debug and fix the library save mechanism in App.tsx by examining the handleProcessingComplete and handleGenerationComplete callback functions to identify why songs are not being saved to the backend after cover mode processing completes",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-current"
+          "msg-recent"
         ],
         "quotes": [
-          "Once the songs are famous they are not going to my library nothing is showing up in the library fix this"
+          "My songs are still not going to my library fix this"
         ]
       },
       "acceptanceCriteria": [
-        "After cover mode processing completes, the song appears in the Library view",
-        "After generation mode processing completes, the song appears in the Library view",
-        "The Library view correctly fetches and displays all saved songs from the backend",
-        "Songs persist in the library across page reloads"
+        "Identify the exact point of failure in the library save workflow for cover mode",
+        "Console logs show the complete execution path from processing completion to backend save call",
+        "Any errors or exceptions in the save flow are captured and logged"
       ]
     },
     {
-      "id": "REQ-39",
-      "text": "Verify that the backend createCover and submitLyricsRequest functions are correctly storing completed songs with all required metadata (title, artist, creation date, audio blob reference, voice sample ID)",
-      "target": "backend",
+      "id": "REQ-53",
+      "text": "Debug and fix the library save mechanism in App.tsx by examining the handleProcessingComplete and handleGenerationComplete callback functions to identify why songs are not being saved to the backend after generation mode processing completes",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-current"
+          "msg-recent"
         ],
         "quotes": [
-          "Once the songs are famous they are not going to my library nothing is showing up in the library fix this"
+          "My songs are still not going to my library fix this"
         ]
       },
       "acceptanceCriteria": [
-        "Backend createCover function stores song records with complete metadata",
-        "Backend submitLyricsRequest function stores song records with complete metadata",
-        "getUserLibrary function returns all stored songs for the authenticated user",
-        "Stored songs include non-null audio blob references"
+        "Identify the exact point of failure in the library save workflow for generation mode",
+        "Console logs show the complete execution path from lyrics submission to backend save call",
+        "Any errors or exceptions in the save flow are captured and logged"
       ]
     },
     {
-      "id": "REQ-40",
-      "text": "Add error handling and logging to the library save workflow to capture and display any errors that prevent songs from being saved to the library",
+      "id": "REQ-54",
+      "text": "Verify that the backend actor's createCover function is being called with complete and correct parameters (songId, voiceSampleId, audio blob) from the useProcessingStatus hook's final step",
       "target": "both",
       "source": {
         "messageIds": [
-          "msg-current"
+          "msg-recent"
+        ],
+        "quotes": [
+          "My songs are still not going to my library fix this"
         ]
       },
       "acceptanceCriteria": [
-        "Console logs show clear error messages if library save fails",
-        "User sees an error notification if a song fails to save to the library",
-        "Error messages indicate the specific failure point (backend storage, frontend state update, etc.)"
+        "Backend createCover function receives all required parameters",
+        "Function returns a valid cover ID upon successful creation",
+        "Any backend errors are properly propagated to the frontend"
+      ]
+    },
+    {
+      "id": "REQ-55",
+      "text": "Verify that the backend actor's submitLyricsRequest function is correctly storing lyrics-based song generation requests and that the generated songs are being persisted to the library storage",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "My songs are still not going to my library fix this"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend submitLyricsRequest function successfully stores the request",
+        "Generated songs from lyrics requests are persisted to library storage",
+        "Library query functions return all saved songs including those from lyrics generation"
+      ]
+    },
+    {
+      "id": "REQ-56",
+      "text": "Add comprehensive console logging throughout App.tsx to track the complete library save workflow including: when processing completes, what data is passed to save functions, backend actor call results, and navigation to library view",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "My songs are still not going to my library fix this"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Console logs show exact state at processing completion",
+        "Console logs show all parameters being passed to backend save functions",
+        "Console logs show backend response (success or error)",
+        "Console logs show navigation trigger to library view"
+      ]
+    },
+    {
+      "id": "REQ-57",
+      "text": "Ensure that after both cover mode and generation mode complete, the application automatically navigates to the Library view and the newly created song appears in the library list without requiring page refresh",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "My songs are still not going to my library fix this"
+        ]
+      },
+      "acceptanceCriteria": [
+        "User is automatically navigated to Library view after processing completes",
+        "Newly created song appears in the library list immediately",
+        "React Query cache is invalidated to refetch library data",
+        "No page refresh is required to see the new song"
+      ]
+    },
+    {
+      "id": "REQ-58",
+      "text": "Add error toast notifications in App.tsx that display user-friendly error messages when songs fail to save to the library, including specific details about what went wrong",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-recent"
+        ],
+        "quotes": [
+          "My songs are still not going to my library fix this"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Toast notification appears when library save fails",
+        "Error message is user-friendly and actionable",
+        "Technical details are logged to console for debugging"
       ]
     }
   ],
   "constraints": [
-    "Do not change the single-actor backend architecture",
-    "Preserve the existing persona-first workflow",
-    "Maintain compatibility with existing Library component UI"
+    "Do not modify the backend single-actor architecture",
+    "Do not edit read-only files in frontend/src/hooks/useInternetIdentity.ts or frontend/src/components/ui",
+    "Preserve the existing two-mode workflow (cover mode and generation mode)",
+    "Maintain compatibility with existing voice persona system"
   ],
   "nonGoals": [
-    "Changing the Library UI design or layout",
-    "Adding new features to the library beyond fixing the save issue",
-    "Modifying the audio playback or download functionality"
+    "Changing the UI/UX of the Library or Personas components",
+    "Modifying the audio processing or generation simulation logic",
+    "Adding new features beyond fixing the library save issue",
+    "Refactoring unrelated code"
   ],
   "imageRequirements": {
     "required": [],

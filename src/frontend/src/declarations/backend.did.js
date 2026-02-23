@@ -94,6 +94,7 @@ export const idlService = IDL.Service({
       [],
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+  'completeLyricsRequest' : IDL.Func([IDL.Text, ExternalBlob], [], []),
   'createCover' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Text, ExternalBlob],
       [],
@@ -118,7 +119,7 @@ export const idlService = IDL.Service({
     ),
   'getUserLibrary' : IDL.Func([IDL.Text], [IDL.Vec(Song)], ['query']),
   'submitLyricsRequest' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Text, IDL.Text, ExternalBlob, IDL.Opt(IDL.Text)],
+      [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
       [],
       [],
     ),
@@ -224,6 +225,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+    'completeLyricsRequest' : IDL.Func([IDL.Text, ExternalBlob], [], []),
     'createCover' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text, ExternalBlob],
         [],
@@ -248,14 +250,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getUserLibrary' : IDL.Func([IDL.Text], [IDL.Vec(Song)], ['query']),
     'submitLyricsRequest' : IDL.Func(
-        [
-          IDL.Text,
-          IDL.Text,
-          IDL.Text,
-          IDL.Text,
-          ExternalBlob,
-          IDL.Opt(IDL.Text),
-        ],
+        [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
         [],
         [],
       ),

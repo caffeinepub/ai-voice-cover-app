@@ -1,49 +1,90 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-23T03:50:33.165Z",
+  "generatedAt": "2026-02-23T18:42:30.303Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 2,
+    "total": 7,
+    "implemented": 6,
     "items": [
       {
-        "id": "REQ-38",
-        "summary": "Debug and fix the library saving mechanism in App.tsx to ensure songs are correctly saved to the backend after both cover mode and generation mode processing completes",
+        "id": "REQ-52",
+        "summary": "Debug and fix the library save mechanism in App.tsx by examining the handleProcessingComplete and handleGenerationComplete callback functions to identify why songs are not being saved to the backend after cover mode processing completes",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/App.tsx",
-          "frontend/src/hooks/useProcessingStatus.ts",
-          "frontend/src/hooks/useGenerationStatus.ts",
-          "frontend/src/components/GenerationMode.tsx",
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/Library.tsx"
+          "frontend/src/hooks/useProcessingStatus.ts"
         ],
         "matchedFiles": [
           "frontend/src/App.tsx",
-          "frontend/src/hooks/useProcessingStatus.ts",
-          "frontend/src/hooks/useGenerationStatus.ts",
-          "frontend/src/components/GenerationMode.tsx",
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/Library.tsx"
+          "frontend/src/hooks/useProcessingStatus.ts"
         ]
       },
       {
-        "id": "REQ-39",
-        "summary": "Verify that the backend createCover and submitLyricsRequest functions are correctly storing completed songs with all required metadata (title, artist, creation date, audio blob reference, voice sample ID)",
+        "id": "REQ-53",
+        "summary": "Debug and fix the library save mechanism in App.tsx by examining the handleProcessingComplete and handleGenerationComplete callback functions to identify why songs are not being saved to the backend after generation mode processing completes",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/hooks/useGenerationStatus.ts",
+          "frontend/src/components/GenerationMode.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/hooks/useGenerationStatus.ts",
+          "frontend/src/components/GenerationMode.tsx"
+        ]
+      },
+      {
+        "id": "REQ-54",
+        "summary": "Verify that the backend actor's createCover function is being called with complete and correct parameters (songId, voiceSampleId, audio blob) from the useProcessingStatus hook's final step",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useProcessingStatus.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useProcessingStatus.ts"
+        ]
+      },
+      {
+        "id": "REQ-55",
+        "summary": "Verify that the backend actor's submitLyricsRequest function is correctly storing lyrics-based song generation requests and that the generated songs are being persisted to the library storage",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-40",
-        "summary": "Add error handling and logging to the library save workflow to capture and display any errors that prevent songs from being saved to the library",
+        "id": "REQ-56",
+        "summary": "Add comprehensive console logging throughout App.tsx to track the complete library save workflow including: when processing completes, what data is passed to save functions, backend actor call results, and navigation to library view",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/ErrorNotification.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-57",
+        "summary": "Ensure that after both cover mode and generation mode complete, the application automatically navigates to the Library view and the newly created song appears in the library list without requiring page refresh",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-58",
+        "summary": "Add error toast notifications in App.tsx that display user-friendly error messages when songs fail to save to the library, including specific details about what went wrong",
+        "status": "implemented",
+        "plannedFiles": [
           "frontend/src/App.tsx",
           "frontend/src/hooks/useProcessingStatus.ts",
           "frontend/src/components/GenerationMode.tsx"
@@ -58,15 +99,16 @@
   },
   "changedFiles": [
     "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
     "frontend/src/components/GenerationMode.tsx",
-    "frontend/src/components/Library.tsx",
-    "frontend/src/components/Personas.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
     "frontend/src/hooks/useGenerationStatus.ts",
     "frontend/src/hooks/useProcessingStatus.ts",
     "frontend/src/hooks/useQueries.ts",

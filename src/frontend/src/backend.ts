@@ -160,6 +160,7 @@ export interface backendInterface {
     _caffeineStorageCreateCertificate(blobHash: string): Promise<_CaffeineStorageCreateCertificateResult>;
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
+    completeLyricsRequest(requestId: string, finalMix: ExternalBlob): Promise<void>;
     createCover(coverId: string, songId: string, voiceSampleId: string, finalMix: ExternalBlob): Promise<void>;
     createVoicePersona(id: string, userId: string, name: string, voiceSampleId: string): Promise<void>;
     getAllLyricsRequests(): Promise<Array<LyricsRequest>>;
@@ -167,7 +168,7 @@ export interface backendInterface {
     getCover(id: string): Promise<Cover | null>;
     getLyricsRequest(requestId: string): Promise<LyricsRequest | null>;
     getUserLibrary(userId: string): Promise<Array<Song>>;
-    submitLyricsRequest(requestId: string, userId: string, lyrics: string, voiceSampleId: string, finalMix: ExternalBlob, stylePrompt: string | null): Promise<void>;
+    submitLyricsRequest(requestId: string, userId: string, lyrics: string, voiceSampleId: string, stylePrompt: string | null): Promise<void>;
     uploadSong(id: string, title: string, artist: string, audioFile: ExternalBlob, instrumentalFile: ExternalBlob, voiceSampleId: string | null, modeType: ModeType): Promise<void>;
     uploadVoiceSample(id: string, userId: string, voiceFile: ExternalBlob): Promise<void>;
 }
@@ -255,6 +256,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor._caffeineStorageUpdateGatewayPrincipals();
+            return result;
+        }
+    }
+    async completeLyricsRequest(arg0: string, arg1: ExternalBlob): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.completeLyricsRequest(arg0, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.completeLyricsRequest(arg0, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -356,17 +371,17 @@ export class Backend implements backendInterface {
             return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
         }
     }
-    async submitLyricsRequest(arg0: string, arg1: string, arg2: string, arg3: string, arg4: ExternalBlob, arg5: string | null): Promise<void> {
+    async submitLyricsRequest(arg0: string, arg1: string, arg2: string, arg3: string, arg4: string | null): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.submitLyricsRequest(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n27(this._uploadFile, this._downloadFile, arg5));
+                const result = await this.actor.submitLyricsRequest(arg0, arg1, arg2, arg3, to_candid_opt_n27(this._uploadFile, this._downloadFile, arg4));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.submitLyricsRequest(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n27(this._uploadFile, this._downloadFile, arg5));
+            const result = await this.actor.submitLyricsRequest(arg0, arg1, arg2, arg3, to_candid_opt_n27(this._uploadFile, this._downloadFile, arg4));
             return result;
         }
     }

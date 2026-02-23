@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useActor } from './useActor';
+import { ExternalBlob } from '../backend';
 
 type GenerationStatus = 'analyzing' | 'composing' | 'synthesizing' | 'mixing' | 'mastering' | 'complete';
 
@@ -11,11 +12,17 @@ export function useGenerationStatus(requestId: string | undefined) {
 
   useEffect(() => {
     if (!actor || !requestId) {
-      console.log('[useGenerationStatus] Waiting for actor or requestId:', { hasActor: !!actor, requestId });
+      console.log('[useGenerationStatus] Waiting for dependencies:', { 
+        hasActor: !!actor, 
+        requestId,
+        timestamp: new Date().toISOString()
+      });
       return;
     }
 
-    console.log('[useGenerationStatus] Starting generation process for requestId:', requestId);
+    console.group('[useGenerationStatus] Starting generation process');
+    console.log('Request ID:', requestId);
+    console.log('Timestamp:', new Date().toISOString());
 
     const stages: GenerationStatus[] = ['analyzing', 'composing', 'synthesizing', 'mixing', 'mastering'];
     let totalProgress = 0;
@@ -45,14 +52,35 @@ export function useGenerationStatus(requestId: string | undefined) {
         setStatus('complete');
         setProgress(100);
         
+        console.log('[useGenerationStatus] All stages complete, calling backend completeLyricsRequest');
+        
+        // Create a dummy final mix for the generated song
+        const dummyAudioData = new Uint8Array(1024).fill(0);
+        const finalMix = ExternalBlob.fromBytes(dummyAudioData);
+        
+        console.log('[useGenerationStatus] Calling actor.completeLyricsRequest with:', {
+          requestId,
+          finalMixType: typeof finalMix
+        });
+        
+        await actor.completeLyricsRequest(requestId, finalMix);
+        
+        console.log('[useGenerationStatus] Backend completeLyricsRequest successful');
+        
         // The generated cover ID is the same as the request ID
-        // because submitLyricsRequest already creates the song record
         const generatedCoverId = requestId;
         setCoverId(generatedCoverId);
         
-        console.log('[useGenerationStatus] Generation complete:', { generatedCoverId });
+        console.log('[useGenerationStatus] Generation complete, coverId set to:', generatedCoverId);
       } catch (err) {
         console.error('[useGenerationStatus] Error during generation:', err);
+        console.error('[useGenerationStatus] Error details:', {
+          name: err instanceof Error ? err.name : 'Unknown',
+          message: err instanceof Error ? err.message : String(err),
+          stack: err instanceof Error ? err.stack : undefined
+        });
+      } finally {
+        console.groupEnd();
       }
     };
 

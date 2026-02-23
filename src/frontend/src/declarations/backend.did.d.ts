@@ -80,6 +80,7 @@ export interface _SERVICE {
     _CaffeineStorageRefillResult
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
+  'completeLyricsRequest' : ActorMethod<[string, ExternalBlob], undefined>,
   'createCover' : ActorMethod<
     [string, string, string, ExternalBlob],
     undefined
@@ -94,7 +95,7 @@ export interface _SERVICE {
   'getLyricsRequest' : ActorMethod<[string], [] | [LyricsRequest]>,
   'getUserLibrary' : ActorMethod<[string], Array<Song>>,
   'submitLyricsRequest' : ActorMethod<
-    [string, string, string, string, ExternalBlob, [] | [string]],
+    [string, string, string, string, [] | [string]],
     undefined
   >,
   'uploadSong' : ActorMethod<

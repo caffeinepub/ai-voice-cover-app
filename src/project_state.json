@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 17,
+  "projectStateVersion": 23,
   "summary": "AI voice cover app: User uploads a song, AI applies user's voice to cover it, then mixes and masters the vocals with the song. The app must be totally free.",
   "architectural_notes": [
     "App must be completely free with no paid features or subscriptions",
@@ -15,7 +15,7 @@
     "Requires audio player component for in-app playback"
   ],
   "known_issues": [
-    "Songs are not being saved to the library after generation/processing completes"
+    "Creative songs and covers are not being saved to the library after generation/processing completes"
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -250,6 +250,110 @@
         "REQ-40"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-app-tsx-workflow-to-ensure-that-all-songs-created-through-cover-mode-song-upload-workflow-are-correctly-saved-to-the-backend-library-with-complete-metadata-title-artist-creation-date-audio-blob-voice-sample-id-after-processing-completes",
+      "title": "Debug and fix the App.tsx workflow to ensure that all songs created through cover mode (song upload workflow) are correctly saved to the backend library with complete metadata (title, artist, creation date, audio blob, voice sample ID) after processing completes",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-app-tsx-workflow-to-ensure-that-all-songs-created-through-generation-mode-lyrics-based-generation-workflow-are-correctly-saved-to-the-backend-library-with-complete-metadata-title-artist-creation-date-audio-blob-voice-sample-id-after-processing-completes",
+      "title": "Debug and fix the App.tsx workflow to ensure that all songs created through generation mode (lyrics-based generation workflow) are correctly saved to the backend library with complete metadata (title, artist, creation date, audio blob, voice sample ID) after processing completes",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-error-handling-and-user-facing-error-messages-in-app-tsx-for-library-save-failures-displaying-toast-notifications-when-songs-fail-to-save-to-the-library",
+      "title": "Add comprehensive error handling and user-facing error messages in App.tsx for library save failures, displaying toast notifications when songs fail to save to the library",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-that-all-saved-songs-in-the-library-are-immediately-playable-using-the-audioplayer-component-without-requiring-page-refresh-or-additional-actions",
+      "title": "Ensure that all saved songs in the library are immediately playable using the AudioPlayer component without requiring page refresh or additional actions",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-logging-statements-throughout-the-library-save-workflow-in-app-tsx-to-track-the-complete-flow-from-processing-completion-through-backend-save-call-to-library-navigation-including-all-intermediate-state-changes-and-function-calls",
+      "title": "Add logging statements throughout the library save workflow in App.tsx to track the complete flow from processing completion through backend save call to library navigation, including all intermediate state changes and function calls",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-investigate-the-root-cause-of-the-deployment-failure-by-examining-deployment-logs-build-output-and-any-error-messages-from-the-internet-computer-canister-deployment-process",
+      "title": "Investigate the root cause of the deployment failure by examining deployment logs, build output, and any error messages from the Internet Computer canister deployment process",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-any-frontend-build-errors-that-may-be-preventing-the-frontend-assets-from-being-compiled-and-deployed-to-the-internet-computer-asset-canister",
+      "title": "Fix any frontend build errors that may be preventing the frontend assets from being compiled and deployed to the Internet Computer asset canister",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-library-save-mechanism-in-app-tsx-by-examining-the-handleprocessingcomplete-and-handlegenerationcomplete-callback-functions-to-identify-why-songs-are-not-being-saved-to-the-backend-after-cover-mode-processing-completes",
+      "title": "Debug and fix the library save mechanism in App.tsx by examining the handleProcessingComplete and handleGenerationComplete callback functions to identify why songs are not being saved to the backend after cover mode processing completes",
+      "reqIds": [
+        "REQ-52"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-library-save-mechanism-in-app-tsx-by-examining-the-handleprocessingcomplete-and-handlegenerationcomplete-callback-functions-to-identify-why-songs-are-not-being-saved-to-the-backend-after-generation-mode-processing-completes",
+      "title": "Debug and fix the library save mechanism in App.tsx by examining the handleProcessingComplete and handleGenerationComplete callback functions to identify why songs are not being saved to the backend after generation mode processing completes",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-backend-actor-s-createcover-function-is-being-called-with-complete-and-correct-parameters-songid-voicesampleid-audio-blob-from-the-useprocessingstatus-hook-s-final-step",
+      "title": "Verify that the backend actor's createCover function is being called with complete and correct parameters (songId, voiceSampleId, audio blob) from the useProcessingStatus hook's final step",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-console-logging-throughout-app-tsx-to-track-the-complete-library-save-workflow-including-when-processing-completes-what-data-is-passed-to-save-functions-backend-actor-call-results-and-navigation-to-library-view",
+      "title": "Add comprehensive console logging throughout App.tsx to track the complete library save workflow including: when processing completes, what data is passed to save functions, backend actor call results, and navigation to library view",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-that-after-both-cover-mode-and-generation-mode-complete-the-application-automatically-navigates-to-the-library-view-and-the-newly-created-song-appears-in-the-library-list-without-requiring-page-refresh",
+      "title": "Ensure that after both cover mode and generation mode complete, the application automatically navigates to the Library view and the newly created song appears in the library list without requiring page refresh",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-error-toast-notifications-in-app-tsx-that-display-user-friendly-error-messages-when-songs-fail-to-save-to-the-library-including-specific-details-about-what-went-wrong",
+      "title": "Add error toast notifications in App.tsx that display user-friendly error messages when songs fail to save to the library, including specific details about what went wrong",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -464,6 +568,46 @@
       "summary": "Verify that the backend createCover and submitLyricsRequest functions are correctly storing completed songs with all required metadata (title, artist, creation date, audio blob reference, voice sample ID)",
       "reqIds": [
         "REQ-39"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-44",
+      "summary": "Verify that the backend actor's saveToLibrary or equivalent function correctly persists song records to stable storage and returns success confirmation",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-46",
+      "summary": "Fix any backend compilation errors in main.mo or migration.mo that may be preventing successful canister deployment",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-48",
+      "summary": "Verify that dfx.json configuration is correct and all canister declarations match the actual project structure",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-49",
+      "summary": "Ensure successful deployment of both backend and frontend canisters to the Internet Computer network",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-53",
+      "summary": "Verify that the backend actor's submitLyricsRequest function is correctly storing lyrics-based song generation requests and that the generated songs are being persisted to the library storage",
+      "reqIds": [
+        "REQ-55"
       ],
       "status": "pending"
     }

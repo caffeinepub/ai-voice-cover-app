@@ -1,78 +1,133 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix songs not appearing in library after generation completes",
+  "title": "Fix library save failure for songs and covers",
   "requirements": [
     {
-      "id": "REQ-38",
-      "summary": "Debug and fix the library saving mechanism to ensure songs are correctly saved to the backend after both cover mode and generation mode processing completes",
+      "id": "REQ-52",
+      "summary": "Debug and fix library save mechanism for cover mode by examining handleProcessingComplete callback to identify why songs are not saved after cover processing completes",
       "acceptanceCriteria": [
-        "After cover mode processing completes, the song appears in the Library view",
-        "After generation mode processing completes, the song appears in the Library view",
-        "The Library view correctly fetches and displays all saved songs from the backend",
-        "Songs persist in the library across page reloads"
+        "Identify the exact point of failure in the library save workflow for cover mode",
+        "Console logs show the complete execution path from processing completion to backend save call",
+        "Any errors or exceptions in the save flow are captured and logged"
       ],
       "file_operations": [
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Add comprehensive error handling and logging to the handleProcessingComplete callback. Ensure that after createCover is called successfully, the Library view is shown and useQueries properly refetches the user library. Add console logging to track the flow from processing completion through backend save to library refresh. Verify that the userId is correctly passed through the workflow."
+          "description": "Add comprehensive console logging in handleProcessingComplete callback to track: (1) when the callback is invoked, (2) the coverId parameter value, (3) any errors during navigation to library, and (4) confirmation that setView('library') is executed. Wrap the callback body in try-catch to capture any exceptions."
         },
         {
           "path": "frontend/src/hooks/useProcessingStatus.ts",
           "operation": "modify",
-          "description": "Add error handling and logging around the createCover mutation call. Ensure the finalAudioBlob is properly created and passed. Add console logs before and after the backend call to track success/failure. Verify the cover ID generation and ensure onComplete callback is invoked with correct parameters even if the mutation fails."
-        },
-        {
-          "path": "frontend/src/hooks/useGenerationStatus.ts",
-          "operation": "modify",
-          "description": "Add error handling and detailed logging to track the generation flow. Ensure that the generated cover ID is properly created and returned. Add console logs at key stages (start, each processing stage, completion) to help debug timing issues. Verify the finalMix ExternalBlob reference is correctly constructed."
-        },
-        {
-          "path": "frontend/src/components/GenerationMode.tsx",
-          "operation": "modify",
-          "description": "Add error handling around the submitLyricsRequest mutation. Ensure the voiceSampleId, lyrics, stylePrompt, and finalMix are correctly passed to the backend. Add console logging before and after the mutation to track the request lifecycle. Verify that the onComplete callback triggers the correct navigation flow to the Library view."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Review and enhance the useUserLibrary query to ensure it properly refetches after createCover and submitLyricsRequest mutations complete. Add error handling and logging to the getUserLibrary query. Ensure the query invalidation logic correctly triggers when new songs are added. Add console logs to track when the library query refetches and what data is returned."
-        },
-        {
-          "path": "frontend/src/components/Library.tsx",
-          "operation": "modify",
-          "description": "Add error state handling and logging to the Library component. Display helpful error messages if the library fails to load. Add console logs showing how many songs are returned from useUserLibrary. Ensure the component properly reacts to query refetches and displays newly added songs immediately."
+          "description": "Add detailed console logging throughout the useProcessingStatus hook to track: (1) when processing stages begin and complete, (2) the dummy audio blob creation, (3) all parameters passed to actor.createCover (coverId, songId, voiceSampleId, finalMix blob), (4) the backend response or any thrown errors, and (5) when onComplete callback is invoked with the coverId. Add try-catch around the actor.createCover call to log any failures."
         }
       ]
     },
     {
-      "id": "REQ-40",
-      "summary": "Add error handling and logging to the library save workflow to capture and display any errors that prevent songs from being saved to the library",
+      "id": "REQ-53",
+      "summary": "Debug and fix library save mechanism for generation mode by examining handleGenerationComplete callback to identify why songs are not saved after lyrics generation completes",
       "acceptanceCriteria": [
-        "Console logs show clear error messages if library save fails",
-        "User sees an error notification if a song fails to save to the library",
-        "Error messages indicate the specific failure point (backend storage, frontend state update, etc.)"
+        "Identify the exact point of failure in the library save workflow for generation mode",
+        "Console logs show the complete execution path from lyrics submission to backend save call",
+        "Any errors or exceptions in the save flow are captured and logged"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/ErrorNotification.tsx",
-          "operation": "create",
-          "description": "Create a toast-style error notification component using shadcn-ui that can display error messages to users. Component should accept error message text and automatically dismiss after a timeout. Use the existing shadcn-ui toast component from the build template."
-        },
-        {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Import and integrate the ErrorNotification component. Add try-catch blocks around the handleProcessingComplete callback to catch any errors during the library save workflow. Display user-friendly error messages using the ErrorNotification component when saves fail. Log detailed error information to the console including stack traces and error codes."
+          "description": "Add comprehensive console logging in handleGenerationComplete callback to track: (1) when the callback is invoked, (2) the coverId parameter value, (3) any errors during navigation to library, and (4) confirmation that setView('library') is executed. Wrap the callback body in try-catch to capture any exceptions."
         },
         {
-          "path": "frontend/src/hooks/useProcessingStatus.ts",
+          "path": "frontend/src/hooks/useGenerationStatus.ts",
           "operation": "modify",
-          "description": "Wrap the createCover mutation call in try-catch. If the mutation fails, log the complete error object with stack trace and error details. Return error state to the caller so App.tsx can display appropriate notifications. Add detailed console logs identifying whether the failure is in blob preparation, network communication, or backend processing."
+          "description": "Add detailed console logging throughout the useGenerationStatus hook to track: (1) when generation stages begin and complete, (2) progress updates for each stage, (3) when the simulated generation completes, (4) the requestId being returned, and (5) when onComplete callback is invoked with the coverId/requestId. Note that this hook does not call backend save functions directly - it only simulates progress and returns a generated ID."
         },
         {
           "path": "frontend/src/components/GenerationMode.tsx",
           "operation": "modify",
-          "description": "Add try-catch around submitLyricsRequest mutation with detailed error logging. Display error notifications to the user if the lyrics submission fails. Log the exact point of failure (validation, blob creation, network, backend) to help diagnose issues."
+          "description": "Add console logging to track: (1) when handleSubmit is called with lyrics and style prompt, (2) the generated requestId, (3) all parameters being passed to actor.submitLyricsRequest, (4) the backend response or any errors, and (5) when onSubmit callback is invoked. Add try-catch around the submitLyricsRequest call to capture and log any backend errors."
+        }
+      ]
+    },
+    {
+      "id": "REQ-54",
+      "summary": "Verify that backend createCover function is called with complete and correct parameters from useProcessingStatus hook's final step",
+      "acceptanceCriteria": [
+        "Backend createCover function receives all required parameters",
+        "Function returns a valid cover ID upon successful creation",
+        "Any backend errors are properly propagated to the frontend"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useProcessingStatus.ts",
+          "operation": "modify",
+          "description": "Add validation logging before calling actor.createCover to verify: (1) coverId is a valid non-empty string, (2) songId is a valid non-empty string, (3) voiceSampleId is a valid non-empty string, (4) finalMix ExternalBlob object exists and has valid data. Log the type and structure of each parameter. Add error handling to catch and log any backend rejection or exception, then re-throw to propagate errors to the caller."
+        }
+      ]
+    },
+    {
+      "id": "REQ-56",
+      "summary": "Add comprehensive console logging throughout App.tsx to track the complete library save workflow including processing completion, data passed to save functions, backend results, and navigation",
+      "acceptanceCriteria": [
+        "Console logs show exact state at processing completion",
+        "Console logs show all parameters being passed to backend save functions",
+        "Console logs show backend response (success or error)",
+        "Console logs show navigation trigger to library view"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add structured console logging throughout App.tsx to track: (1) component mount and current view state, (2) when handleProcessingComplete is called with coverId parameter, (3) when handleGenerationComplete is called with coverId parameter, (4) when view changes occur via setView, (5) current workflow step and mode state, and (6) persona selection state. Group related logs using console.group for better readability. Add timestamp prefixes to all log statements."
+        }
+      ]
+    },
+    {
+      "id": "REQ-57",
+      "summary": "Ensure automatic navigation to Library view and immediate display of newly created songs after both cover and generation modes complete without page refresh",
+      "acceptanceCriteria": [
+        "User is automatically navigated to Library view after processing completes",
+        "Newly created song appears in the library list immediately",
+        "React Query cache is invalidated to refetch library data",
+        "No page refresh is required to see the new song"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Modify handleProcessingComplete and handleGenerationComplete callbacks to: (1) call queryClient.invalidateQueries for the user library query to force a refetch, (2) add a small delay (100-200ms) before navigation to ensure backend save completes, (3) navigate to library view via setView('library'), and (4) log each step. Import useQueryClient from @tanstack/react-query to access the query client instance."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure the useUserLibrary hook has appropriate refetchOnMount and staleTime settings to immediately show new data when the Library view is navigated to. Add a query key constant that can be imported by App.tsx for manual invalidation. Consider setting staleTime to 0 or a low value to ensure fresh data is always fetched."
+        }
+      ]
+    },
+    {
+      "id": "REQ-58",
+      "summary": "Add error toast notifications that display user-friendly messages when songs fail to save to the library, including specific error details",
+      "acceptanceCriteria": [
+        "Toast notification appears when library save fails",
+        "Error message is user-friendly and actionable",
+        "Technical details are logged to console for debugging"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Import and use the toast notification system (likely from shadcn-ui components) to display error messages in handleProcessingComplete and handleGenerationComplete callbacks. Wrap the processing completion logic in try-catch blocks and show user-friendly error toasts on failure such as 'Failed to save your song to the library. Please try again.' while logging the full technical error to console. Include the error message in the toast if it provides actionable information."
+        },
+        {
+          "path": "frontend/src/hooks/useProcessingStatus.ts",
+          "operation": "modify",
+          "description": "Modify the hook to return error state alongside the progress state. When actor.createCover fails, capture the error and include it in the return value so App.tsx can display appropriate error messages to the user. Do not suppress errors - allow them to propagate while also tracking them in state."
+        },
+        {
+          "path": "frontend/src/components/GenerationMode.tsx",
+          "operation": "modify",
+          "description": "Add error handling in the handleSubmit function to catch and display user-friendly error messages when actor.submitLyricsRequest fails. Import and use the toast notification system to show errors like 'Failed to submit lyrics request. Please try again.' while logging technical details to console."
         }
       ]
     }

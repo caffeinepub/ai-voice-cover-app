@@ -2,14 +2,93 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-debug-and-fix-the-library-saving-mechanism-in-app-tsx-to-ensure-songs-are-correctly-saved-to-the-backend-after-both-cover-mode-and-generation-mode-processing-completes",
-      "featureTitle": "Debug and fix the library saving mechanism in App.tsx to ensure songs are correctly saved to the backend after both cover mode and generation mode processing completes",
+      "featureId": "feature-debug-and-fix-the-library-save-mechanism-in-app-tsx-by-examining-the-handleprocessingcomplete-and-handlegenerationcomplete-callback-functions-to-identify-why-songs-are-not-being-saved-to-the-backend-after-cover-mode-processing-completes",
+      "featureTitle": "Debug and fix the library save mechanism in App.tsx by examining the handleProcessingComplete and handleGenerationComplete callback functions to identify why songs are not being saved to the backend after cover mode processing completes",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/hooks/useProcessingStatus.ts"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-52"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-debug-and-fix-the-library-save-mechanism-in-app-tsx-by-examining-the-handleprocessingcomplete-and-handlegenerationcomplete-callback-functions-to-identify-why-songs-are-not-being-saved-to-the-backend-after-generation-mode-processing-completes",
+      "featureTitle": "Debug and fix the library save mechanism in App.tsx by examining the handleProcessingComplete and handleGenerationComplete callback functions to identify why songs are not being saved to the backend after generation mode processing completes",
       "files": [
         "frontend/src/App.tsx",
         "frontend/src/components/GenerationMode.tsx",
-        "frontend/src/components/Library.tsx",
-        "frontend/src/hooks/useGenerationStatus.ts",
-        "frontend/src/hooks/useProcessingStatus.ts",
+        "frontend/src/hooks/useGenerationStatus.ts"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-53"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-verify-that-the-backend-actor-s-createcover-function-is-being-called-with-complete-and-correct-parameters-songid-voicesampleid-audio-blob-from-the-useprocessingstatus-hook-s-final-step",
+      "featureTitle": "Verify that the backend actor's createCover function is being called with complete and correct parameters (songId, voiceSampleId, audio blob) from the useProcessingStatus hook's final step",
+      "files": [
+        "frontend/src/hooks/useProcessingStatus.ts"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-54"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-comprehensive-console-logging-throughout-app-tsx-to-track-the-complete-library-save-workflow-including-when-processing-completes-what-data-is-passed-to-save-functions-backend-actor-call-results-and-navigation-to-library-view",
+      "featureTitle": "Add comprehensive console logging throughout App.tsx to track the complete library save workflow including: when processing completes, what data is passed to save functions, backend actor call results, and navigation to library view",
+      "files": [
+        "frontend/src/App.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-56"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-that-after-both-cover-mode-and-generation-mode-complete-the-application-automatically-navigates-to-the-library-view-and-the-newly-created-song-appears-in-the-library-list-without-requiring-page-refresh",
+      "featureTitle": "Ensure that after both cover mode and generation mode complete, the application automatically navigates to the Library view and the newly created song appears in the library list without requiring page refresh",
+      "files": [
+        "frontend/src/App.tsx",
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -22,13 +101,13 @@
         "http-outcalls@3.0.0"
       ],
       "testIds": [
-        "REQ-38"
+        "REQ-57"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-error-handling-and-logging-to-the-library-save-workflow-to-capture-and-display-any-errors-that-prevent-songs-from-being-saved-to-the-library",
-      "featureTitle": "Add error handling and logging to the library save workflow to capture and display any errors that prevent songs from being saved to the library",
+      "featureId": "feature-add-error-toast-notifications-in-app-tsx-that-display-user-friendly-error-messages-when-songs-fail-to-save-to-the-library-including-specific-details-about-what-went-wrong",
+      "featureTitle": "Add error toast notifications in App.tsx that display user-friendly error messages when songs fail to save to the library, including specific details about what went wrong",
       "files": [
         "frontend/src/App.tsx",
         "frontend/src/components/GenerationMode.tsx",
@@ -44,7 +123,7 @@
         "http-outcalls@3.0.0"
       ],
       "testIds": [
-        "REQ-40"
+        "REQ-58"
       ],
       "confidence": "high"
     }

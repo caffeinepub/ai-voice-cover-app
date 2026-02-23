@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Layout } from './components/Layout';
 import { ModeSelector } from './components/ModeSelector';
 import { VoiceInput } from './components/VoiceInput';
@@ -33,8 +34,21 @@ function App() {
   const [currentView, setCurrentView] = useState<View>('create');
   const [currentStep, setCurrentStep] = useState<Step>('mode');
   const [appState, setAppState] = useState<AppState>({});
+  const queryClient = useQueryClient();
+
+  // Use a consistent userId throughout the app
+  const userId = 'user';
+
+  console.log('[App] Component mounted/updated:', {
+    currentView,
+    currentStep,
+    workflowMode: appState.workflowMode,
+    selectedPersonaId: appState.selectedPersonaId,
+    timestamp: new Date().toISOString()
+  });
 
   const handleModeSelect = (mode: WorkflowMode) => {
+    console.log('[App] Mode selected:', mode);
     setAppState(prev => ({ ...prev, workflowMode: mode }));
     
     // If persona is pre-selected, skip voice input
@@ -50,6 +64,7 @@ function App() {
   };
 
   const handlePersonaSelect = (personaId: string, voiceSampleId: string) => {
+    console.log('[App] Persona selected:', { personaId, voiceSampleId });
     setAppState(prev => ({ 
       ...prev, 
       selectedPersonaId: personaId,
@@ -61,6 +76,7 @@ function App() {
   };
 
   const handleVoiceComplete = (id: string, blob: ExternalBlob) => {
+    console.log('[App] Voice complete:', { id });
     setAppState(prev => ({ ...prev, voiceSampleId: id, voiceBlob: blob }));
     
     if (appState.workflowMode === 'cover') {
@@ -73,37 +89,64 @@ function App() {
   };
 
   const handleSongComplete = (id: string, title: string, artist: string) => {
+    console.log('[App] Song complete:', { id, title, artist });
     setAppState(prev => ({ ...prev, songId: id, songTitle: title, songArtist: artist }));
     setCurrentStep('processing');
   };
 
   const handleLyricsComplete = (requestId: string, lyrics: string) => {
+    console.log('[App] Lyrics complete:', { requestId, lyricsLength: lyrics.length });
     setAppState(prev => ({ ...prev, lyricsRequestId: requestId, lyrics }));
     setCurrentStep('processing');
   };
 
-  const handleProcessingComplete = (coverId: string, finalMix: ExternalBlob) => {
-    console.log('[App] Processing complete:', { coverId, workflowMode: appState.workflowMode });
+  const handleProcessingComplete = async (coverId: string, finalMix: ExternalBlob) => {
+    console.group('[App] Processing complete callback invoked');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('Cover ID:', coverId);
+    console.log('Workflow mode:', appState.workflowMode);
+    console.log('Final mix:', finalMix);
     
-    setAppState(prev => ({ ...prev, coverId, finalMix }));
-    
-    // Navigate to Library view after processing completes
-    setCurrentView('library');
-    
-    // Show success message
-    const message = appState.workflowMode === 'generation' 
-      ? 'Your song is ready! Check it out in your library.' 
-      : 'Your cover is ready! Check it out in your library.';
-    toast.success(message);
-    
-    // Reset the creation workflow after a short delay to allow library to load
-    setTimeout(() => {
-      setCurrentStep('mode');
-      setAppState({});
-    }, 500);
+    try {
+      setAppState(prev => ({ ...prev, coverId, finalMix }));
+      
+      // Invalidate library query to force refetch
+      console.log('[App] Invalidating library queries for userId:', userId);
+      await queryClient.invalidateQueries({ queryKey: ['userLibrary', userId] });
+      
+      // Small delay to ensure backend save completes
+      console.log('[App] Waiting 200ms before navigation...');
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Navigate to Library view after processing completes
+      console.log('[App] Navigating to library view');
+      setCurrentView('library');
+      
+      // Show success message
+      const message = appState.workflowMode === 'generation' 
+        ? 'Your song is ready! Check it out in your library.' 
+        : 'Your cover is ready! Check it out in your library.';
+      toast.success(message);
+      
+      // Reset the creation workflow after a short delay to allow library to load
+      console.log('[App] Scheduling workflow reset in 500ms');
+      setTimeout(() => {
+        console.log('[App] Resetting workflow state');
+        setCurrentStep('mode');
+        setAppState({});
+      }, 500);
+      
+      console.log('[App] Processing complete callback finished successfully');
+    } catch (error) {
+      console.error('[App] Error in handleProcessingComplete:', error);
+      toast.error('Failed to save your song to the library. Please try again.');
+    } finally {
+      console.groupEnd();
+    }
   };
 
   const handleViewChange = (view: View) => {
+    console.log('[App] View change requested:', view);
     setCurrentView(view);
     if (view === 'create') {
       setCurrentStep('mode');
@@ -153,7 +196,7 @@ function App() {
 
           {/* Personas View */}
           {currentView === 'personas' && (
-            <Personas onPersonaSelect={handlePersonaSelect} />
+            <Personas userId={userId} onPersonaSelect={handlePersonaSelect} />
           )}
 
           {/* Create View */}

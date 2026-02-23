@@ -4,11 +4,8 @@ import Time "mo:core/Time";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
 import Iter "mo:core/Iter";
-import Migration "migration";
 import List "mo:core/List";
-import Debug "mo:core/Debug";
 
-(with migration = Migration.run)
 actor {
   include MixinStorage();
 
@@ -148,7 +145,7 @@ actor {
   };
 
   // Request lyrics-based song generation
-  public shared ({ caller }) func submitLyricsRequest(requestId : Text, userId : Text, lyrics : Text, voiceSampleId : Text, finalMix : Storage.ExternalBlob, stylePrompt : ?Text) : async () {
+  public shared ({ caller }) func submitLyricsRequest(requestId : Text, userId : Text, lyrics : Text, voiceSampleId : Text, stylePrompt : ?Text) : async () {
     let request : LyricsRequest = {
       id = requestId;
       userId;
@@ -159,18 +156,36 @@ actor {
       stylePrompt;
     };
     lyricsRequests.add(requestId, request);
+  };
 
-    let generatedSong : Song = {
-      id = requestId;
-      title = lyrics;
-      artist = userId;
-      audioFile = finalMix;
-      instrumentalFile = finalMix;
-      creationDate = Time.now();
-      modeType = #original;
-      voiceSampleId = ?voiceSampleId;
+  public shared ({ caller }) func completeLyricsRequest(requestId : Text, finalMix : Storage.ExternalBlob) : async () {
+    switch (lyricsRequests.get(requestId)) {
+      case (null) {};
+      case (?originalRequest) {
+        let completeRequest : LyricsRequest = {
+          id = originalRequest.id;
+          userId = originalRequest.userId;
+          lyrics = originalRequest.lyrics;
+          voiceSampleId = originalRequest.voiceSampleId;
+          status = #processing;
+          generatedCoverId = ?requestId;
+          stylePrompt = originalRequest.stylePrompt;
+        };
+        lyricsRequests.add(requestId, completeRequest);
+
+        let generatedSong : Song = {
+          id = requestId;
+          title = originalRequest.lyrics;
+          artist = originalRequest.userId;
+          audioFile = finalMix;
+          instrumentalFile = finalMix;
+          creationDate = Time.now();
+          modeType = #original;
+          voiceSampleId = ?originalRequest.voiceSampleId;
+        };
+        songs.add(requestId, generatedSong);
+      };
     };
-    songs.add(requestId, generatedSong);
   };
 
   public query ({ caller }) func getLyricsRequest(requestId : Text) : async ?LyricsRequest {

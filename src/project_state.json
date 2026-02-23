@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 13,
+  "projectStateVersion": 15,
   "summary": "AI voice cover app: User uploads a song, AI applies user's voice to cover it, then mixes and masters the vocals with the song. The app must be totally free.",
   "architectural_notes": [
     "App must be completely free with no paid features or subscriptions",
@@ -226,6 +226,14 @@
         "REQ-35"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-lyricsinput-component-to-remove-the-maximum-character-limit-validation-currently-2-000-characters-allowing-users-to-enter-unlimited-lyrics-text-while-keeping-the-minimum-20-character-requirement",
+      "title": "Update the LyricsInput component to remove the maximum character limit validation (currently 2,000 characters), allowing users to enter unlimited lyrics text while keeping the minimum 20 character requirement",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -424,6 +432,14 @@
       "summary": "Update the backend submitLyricsRequest function to accept and store the stylePrompt parameter in the LyricsRequest record",
       "reqIds": [
         "REQ-36"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "Remove character limit on lyrics input, allowing unlimited characters",
+      "reqIds": [
+        "AR-12"
       ],
       "status": "pending"
     }

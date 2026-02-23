@@ -1,101 +1,37 @@
 {
   "kind": "build_request",
-  "title": "Add music style prompt input with suggested keywords for lyrics generation mode",
+  "title": "Remove character limit on lyrics input",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-32",
-      "text": "Add a text input field to the lyrics generation workflow (GenerationMode component) where users can describe the desired music style and characteristics for their song (e.g., '808 beats with Auto-Tune and deep bass')",
+      "id": "REQ-37",
+      "text": "Update the LyricsInput component to remove the maximum character limit validation (currently 2,000 characters), allowing users to enter unlimited lyrics text while keeping the minimum 20 character requirement",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-final"
+          "msg-user-request"
         ],
         "quotes": [
-          "give it a prompt box for users to insert their own prompts of how they want the music to sign"
+          "Yes but when writing on lyrics instead of 2,000 characters make it unlimited amount of characters that the user can use in lyrics"
         ]
       },
       "acceptanceCriteria": [
-        "A text input or textarea appears in the GenerationMode component alongside the lyrics input",
-        "The input has a clear label like 'Music Style' or 'Style Prompt'",
-        "Users can type free-form text describing their desired music style",
-        "The prompt value is captured in component state and can be submitted with the lyrics"
-      ]
-    },
-    {
-      "id": "REQ-33",
-      "text": "Display suggested music style keywords (such as '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice', 'reverb', 'distortion', 'trap', 'R&B', 'pop', 'rock') as clickable tags or chips that users can click to insert into their style prompt",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-final"
-        ],
-        "quotes": [
-          "suggest keywords that they should use like 808 Auto-Tune deep face male voice etc"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A set of keyword suggestions is displayed near the style prompt input",
-        "Keywords include at least: '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice'",
-        "Clicking a keyword inserts it into the style prompt input",
-        "Keywords are visually styled as clickable tags or chips",
-        "Multiple keywords can be added to the prompt"
-      ]
-    },
-    {
-      "id": "REQ-34",
-      "text": "Update the backend LyricsRequest data model to include an optional stylePrompt field of type Text to store the user's music style description",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-user-final"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The LyricsRequest type in backend/main.mo includes a stylePrompt field",
-        "The field is optional (e.g., ?Text) to maintain backward compatibility",
-        "Existing lyrics requests without stylePrompt continue to function"
-      ]
-    },
-    {
-      "id": "REQ-35",
-      "text": "Update the GenerationMode component to submit the style prompt value along with lyrics when calling the backend submitLyricsRequest function",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-final"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The style prompt input value is captured when the user submits lyrics",
-        "The submitLyricsRequest mutation includes the stylePrompt parameter",
-        "The prompt is passed to the backend when creating a lyrics request"
-      ]
-    },
-    {
-      "id": "REQ-36",
-      "text": "Update the backend submitLyricsRequest function to accept and store the stylePrompt parameter in the LyricsRequest record",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-user-final"
-        ]
-      },
-      "acceptanceCriteria": [
-        "The submitLyricsRequest function signature accepts a stylePrompt parameter",
-        "The stylePrompt is stored in the LyricsRequest record when created",
-        "If no prompt is provided, the field is stored as null or empty"
+        "The lyrics textarea accepts any number of characters without upper limit validation",
+        "The minimum 20 character requirement remains enforced",
+        "The character count display shows the current count without showing a maximum",
+        "The submit button remains enabled as long as the minimum 20 character requirement is met",
+        "No error messages appear when typing beyond the previous 2,000 character limit"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the single-actor architecture in backend/main.mo",
-    "Do not edit read-only files in frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui"
+    "Keep the minimum 20 character validation requirement",
+    "Do not modify the backend LyricsRequest data model or submitLyricsRequest function"
   ],
   "nonGoals": [
-    "Implementing actual AI music generation logic (simulation only)",
-    "Integrating with external music generation APIs",
-    "Advanced prompt validation or NLP processing"
+    "Changing the style prompt input or keyword suggestions functionality",
+    "Modifying backend validation for lyrics length",
+    "Adding new features to the lyrics input component"
   ],
   "imageRequirements": {
     "required": [],

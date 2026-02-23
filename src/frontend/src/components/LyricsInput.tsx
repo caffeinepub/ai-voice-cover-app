@@ -11,16 +11,15 @@ interface LyricsInputProps {
 export function LyricsInput({ onSubmit, isSubmitting = false }: LyricsInputProps) {
   const [lyrics, setLyrics] = useState('');
   const minLength = 20;
-  const maxLength = 2000;
 
   const handleSubmit = () => {
     const trimmedLyrics = lyrics.trim();
-    if (trimmedLyrics.length >= minLength && trimmedLyrics.length <= maxLength) {
+    if (trimmedLyrics.length >= minLength) {
       onSubmit(trimmedLyrics);
     }
   };
 
-  const isValid = lyrics.trim().length >= minLength && lyrics.trim().length <= maxLength;
+  const isValid = lyrics.trim().length >= minLength;
 
   return (
     <div className="space-y-4">
@@ -44,8 +43,8 @@ export function LyricsInput({ onSubmit, isSubmitting = false }: LyricsInputProps
         />
         <div className="absolute bottom-3 right-3 flex items-center gap-2 text-xs text-muted-foreground">
           <FileText className="h-3 w-3" />
-          <span className={lyrics.length > maxLength ? 'text-destructive' : ''}>
-            {lyrics.length} / {maxLength}
+          <span>
+            {lyrics.length} characters
           </span>
         </div>
       </div>

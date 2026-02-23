@@ -1,66 +1,23 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add music style prompt input with suggested keywords for lyrics generation mode",
+  "title": "Remove character limit on lyrics input",
   "requirements": [
     {
-      "id": "REQ-32",
-      "summary": "Add a text input field to the lyrics generation workflow where users can describe the desired music style and characteristics",
+      "id": "REQ-37",
+      "summary": "Remove the maximum character limit validation from LyricsInput component while keeping the minimum 20 character requirement",
       "acceptanceCriteria": [
-        "A text input or textarea appears in the GenerationMode component alongside the lyrics input",
-        "The input has a clear label like 'Music Style' or 'Style Prompt'",
-        "Users can type free-form text describing their desired music style",
-        "The prompt value is captured in component state and can be submitted with the lyrics"
+        "The lyrics textarea accepts any number of characters without upper limit validation",
+        "The minimum 20 character requirement remains enforced",
+        "The character count display shows the current count without showing a maximum",
+        "The submit button remains enabled as long as the minimum 20 character requirement is met",
+        "No error messages appear when typing beyond the previous 2,000 character limit"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/GenerationMode.tsx",
+          "path": "frontend/src/components/LyricsInput.tsx",
           "operation": "modify",
-          "description": "Add a text input field for music style prompt with a clear label ('Music Style' or 'Style Prompt'). Capture the input value in component state alongside the existing lyrics state. Position the input field near the LyricsInput component in the UI. Ensure the state is ready to be submitted with the lyrics when the user proceeds."
-        }
-      ]
-    },
-    {
-      "id": "REQ-33",
-      "summary": "Display suggested music style keywords as clickable tags that users can click to insert into their style prompt",
-      "acceptanceCriteria": [
-        "A set of keyword suggestions is displayed near the style prompt input",
-        "Keywords include at least: '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice'",
-        "Clicking a keyword inserts it into the style prompt input",
-        "Keywords are visually styled as clickable tags or chips",
-        "Multiple keywords can be added to the prompt"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/StyleKeywords.tsx",
-          "operation": "create",
-          "description": "Create a new component that displays clickable keyword suggestions including at least: '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice', 'reverb', 'distortion', 'trap', 'R&B', 'pop', 'rock'. Style them as clickable tags or chips using Tailwind CSS classes. Accept an onKeywordClick callback prop that will be invoked with the keyword text when a user clicks a keyword. Render the keywords in a flex-wrap container for responsive display."
-        },
-        {
-          "path": "frontend/src/components/GenerationMode.tsx",
-          "operation": "modify",
-          "description": "Import and render the StyleKeywords component near the style prompt input field. Implement a handler function that receives the clicked keyword and inserts it into the style prompt input value (appending with a space if the input is not empty). Pass this handler as the onKeywordClick prop to StyleKeywords. Ensure multiple keywords can be added sequentially to build up the prompt."
-        }
-      ]
-    },
-    {
-      "id": "REQ-35",
-      "summary": "Update the GenerationMode component to submit the style prompt value along with lyrics when calling the backend submitLyricsRequest function",
-      "acceptanceCriteria": [
-        "The style prompt input value is captured when the user submits lyrics",
-        "The submitLyricsRequest mutation includes the stylePrompt parameter",
-        "The prompt is passed to the backend when creating a lyrics request"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/GenerationMode.tsx",
-          "operation": "modify",
-          "description": "Update the submission logic to include the stylePrompt value when calling the backend submitLyricsRequest function. Pass the captured style prompt state as the stylePrompt parameter in the mutation call. If the style prompt input is empty, pass null to maintain backend compatibility with the optional field."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Update the submitLyricsRequest mutation to accept a stylePrompt parameter and pass it to the backend actor's submitLyricsRequest function. Ensure the parameter is typed as string | null to match the backend interface signature. The mutation should forward the stylePrompt value received from the GenerationMode component to the backend."
+          "description": "Remove the maximum character limit validation (currently 2,000 characters) from the lyrics textarea. Update the character count display to show only the current count without a maximum. Keep the minimum 20 character validation and ensure the submit button is enabled when the minimum requirement is met. Remove any error messages or visual indicators related to the 2,000 character maximum limit."
         }
       ]
     }

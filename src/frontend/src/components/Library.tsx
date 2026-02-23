@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUserLibrary } from '../hooks/useQueries';
 import { Play, Pause, Download, Loader2, Music, Share2 } from 'lucide-react';
 import { AudioPlayer } from './AudioPlayer';
@@ -12,10 +12,21 @@ import type { Song } from '../backend';
 type AudioFormat = 'mp3' | 'wav';
 
 export function Library() {
-  const { data: songs, isLoading, error } = useUserLibrary('user');
+  // Use a consistent userId - in production this would come from authentication
+  // For now, we use a hardcoded value that matches what's used throughout the app
+  const userId = 'user';
+  const { data: songs, isLoading, error, refetch } = useUserLibrary(userId);
   const [selectedFormat, setSelectedFormat] = useState<AudioFormat>('mp3');
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const { isPlaying, togglePlayPause, loadAudio } = useAudioPlayer();
+
+  useEffect(() => {
+    console.log('[Library] Component mounted/updated:', { 
+      songsCount: songs?.length || 0, 
+      isLoading, 
+      hasError: !!error 
+    });
+  }, [songs, isLoading, error]);
 
   const handlePlayPause = (song: Song) => {
     if (currentSong?.id === song.id) {
@@ -49,7 +60,7 @@ export function Library() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('Download failed:', err);
+      console.error('[Library] Download failed:', err);
     }
   };
 
@@ -65,10 +76,20 @@ export function Library() {
   }
 
   if (error) {
+    console.error('[Library] Error loading library:', error);
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
           <p className="text-destructive">Failed to load library</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {error instanceof Error ? error.message : 'Unknown error'}
+          </p>
+          <button
+            onClick={() => refetch()}
+            className="mt-4 rounded-lg bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );

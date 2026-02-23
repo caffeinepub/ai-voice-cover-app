@@ -1,23 +1,78 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Remove character limit on lyrics input",
+  "title": "Fix songs not appearing in library after generation completes",
   "requirements": [
     {
-      "id": "REQ-37",
-      "summary": "Remove the maximum character limit validation from LyricsInput component while keeping the minimum 20 character requirement",
+      "id": "REQ-38",
+      "summary": "Debug and fix the library saving mechanism to ensure songs are correctly saved to the backend after both cover mode and generation mode processing completes",
       "acceptanceCriteria": [
-        "The lyrics textarea accepts any number of characters without upper limit validation",
-        "The minimum 20 character requirement remains enforced",
-        "The character count display shows the current count without showing a maximum",
-        "The submit button remains enabled as long as the minimum 20 character requirement is met",
-        "No error messages appear when typing beyond the previous 2,000 character limit"
+        "After cover mode processing completes, the song appears in the Library view",
+        "After generation mode processing completes, the song appears in the Library view",
+        "The Library view correctly fetches and displays all saved songs from the backend",
+        "Songs persist in the library across page reloads"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/LyricsInput.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Remove the maximum character limit validation (currently 2,000 characters) from the lyrics textarea. Update the character count display to show only the current count without a maximum. Keep the minimum 20 character validation and ensure the submit button is enabled when the minimum requirement is met. Remove any error messages or visual indicators related to the 2,000 character maximum limit."
+          "description": "Add comprehensive error handling and logging to the handleProcessingComplete callback. Ensure that after createCover is called successfully, the Library view is shown and useQueries properly refetches the user library. Add console logging to track the flow from processing completion through backend save to library refresh. Verify that the userId is correctly passed through the workflow."
+        },
+        {
+          "path": "frontend/src/hooks/useProcessingStatus.ts",
+          "operation": "modify",
+          "description": "Add error handling and logging around the createCover mutation call. Ensure the finalAudioBlob is properly created and passed. Add console logs before and after the backend call to track success/failure. Verify the cover ID generation and ensure onComplete callback is invoked with correct parameters even if the mutation fails."
+        },
+        {
+          "path": "frontend/src/hooks/useGenerationStatus.ts",
+          "operation": "modify",
+          "description": "Add error handling and detailed logging to track the generation flow. Ensure that the generated cover ID is properly created and returned. Add console logs at key stages (start, each processing stage, completion) to help debug timing issues. Verify the finalMix ExternalBlob reference is correctly constructed."
+        },
+        {
+          "path": "frontend/src/components/GenerationMode.tsx",
+          "operation": "modify",
+          "description": "Add error handling around the submitLyricsRequest mutation. Ensure the voiceSampleId, lyrics, stylePrompt, and finalMix are correctly passed to the backend. Add console logging before and after the mutation to track the request lifecycle. Verify that the onComplete callback triggers the correct navigation flow to the Library view."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Review and enhance the useUserLibrary query to ensure it properly refetches after createCover and submitLyricsRequest mutations complete. Add error handling and logging to the getUserLibrary query. Ensure the query invalidation logic correctly triggers when new songs are added. Add console logs to track when the library query refetches and what data is returned."
+        },
+        {
+          "path": "frontend/src/components/Library.tsx",
+          "operation": "modify",
+          "description": "Add error state handling and logging to the Library component. Display helpful error messages if the library fails to load. Add console logs showing how many songs are returned from useUserLibrary. Ensure the component properly reacts to query refetches and displays newly added songs immediately."
+        }
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "summary": "Add error handling and logging to the library save workflow to capture and display any errors that prevent songs from being saved to the library",
+      "acceptanceCriteria": [
+        "Console logs show clear error messages if library save fails",
+        "User sees an error notification if a song fails to save to the library",
+        "Error messages indicate the specific failure point (backend storage, frontend state update, etc.)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ErrorNotification.tsx",
+          "operation": "create",
+          "description": "Create a toast-style error notification component using shadcn-ui that can display error messages to users. Component should accept error message text and automatically dismiss after a timeout. Use the existing shadcn-ui toast component from the build template."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Import and integrate the ErrorNotification component. Add try-catch blocks around the handleProcessingComplete callback to catch any errors during the library save workflow. Display user-friendly error messages using the ErrorNotification component when saves fail. Log detailed error information to the console including stack traces and error codes."
+        },
+        {
+          "path": "frontend/src/hooks/useProcessingStatus.ts",
+          "operation": "modify",
+          "description": "Wrap the createCover mutation call in try-catch. If the mutation fails, log the complete error object with stack trace and error details. Return error state to the caller so App.tsx can display appropriate notifications. Add detailed console logs identifying whether the failure is in blob preparation, network communication, or backend processing."
+        },
+        {
+          "path": "frontend/src/components/GenerationMode.tsx",
+          "operation": "modify",
+          "description": "Add try-catch around submitLyricsRequest mutation with detailed error logging. Display error notifications to the user if the lyrics submission fails. Log the exact point of failure (validation, blob creation, network, backend) to help diagnose issues."
         }
       ]
     }

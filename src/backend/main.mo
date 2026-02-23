@@ -4,9 +4,11 @@ import Time "mo:core/Time";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
 import Iter "mo:core/Iter";
+import Migration "migration";
+import List "mo:core/List";
+import Debug "mo:core/Debug";
 
-
-
+(with migration = Migration.run)
 actor {
   include MixinStorage();
 
@@ -180,10 +182,27 @@ actor {
   };
 
   public query ({ caller }) func getUserLibrary(userId : Text) : async [Song] {
-    songs.values().toArray().filter(func(song) { switch (song.voiceSampleId) { case (?id) { id == userId }; case (null) { false } } });
+    let filteredSongs = List.empty<Song>();
+    for (song in songs.values()) {
+      switch (song.voiceSampleId) {
+        case (?id) {
+          if (id == userId) {
+            filteredSongs.add(song);
+          };
+        };
+        case (null) {};
+      };
+    };
+    filteredSongs.toArray();
   };
 
   public query ({ caller }) func getAllVoicePersonas(userId : Text) : async [VoicePersona] {
-    voicePersonas.values().toArray().filter(func(persona) { persona.userId == userId });
+    let filteredPersonas = List.empty<VoicePersona>();
+    for (persona in voicePersonas.values()) {
+      if (persona.userId == userId) {
+        filteredPersonas.add(persona);
+      };
+    };
+    filteredPersonas.toArray();
   };
 };

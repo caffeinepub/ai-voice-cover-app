@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 15,
+  "projectStateVersion": 17,
   "summary": "AI voice cover app: User uploads a song, AI applies user's voice to cover it, then mixes and masters the vocals with the song. The app must be totally free.",
   "architectural_notes": [
     "App must be completely free with no paid features or subscriptions",
@@ -15,7 +15,7 @@
     "Requires audio player component for in-app playback"
   ],
   "known_issues": [
-    "Downloaded audio files do not play correctly"
+    "Songs are not being saved to the library after generation/processing completes"
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -234,6 +234,22 @@
         "REQ-37"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-library-saving-mechanism-in-app-tsx-to-ensure-songs-are-correctly-saved-to-the-backend-after-both-cover-mode-and-generation-mode-processing-completes",
+      "title": "Debug and fix the library saving mechanism in App.tsx to ensure songs are correctly saved to the backend after both cover mode and generation mode processing completes",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-error-handling-and-logging-to-the-library-save-workflow-to-capture-and-display-any-errors-that-prevent-songs-from-being-saved-to-the-library",
+      "title": "Add error handling and logging to the library save workflow to capture and display any errors that prevent songs from being saved to the library",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -440,6 +456,14 @@
       "summary": "Remove character limit on lyrics input, allowing unlimited characters",
       "reqIds": [
         "AR-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-41",
+      "summary": "Verify that the backend createCover and submitLyricsRequest functions are correctly storing completed songs with all required metadata (title, artist, creation date, audio blob reference, voice sample ID)",
+      "reqIds": [
+        "REQ-39"
       ],
       "status": "pending"
     }

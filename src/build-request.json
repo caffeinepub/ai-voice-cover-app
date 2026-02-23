@@ -1,37 +1,71 @@
 {
   "kind": "build_request",
-  "title": "Remove character limit on lyrics input",
-  "priority": "normal",
+  "title": "Fix songs not appearing in library after generation completes",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-37",
-      "text": "Update the LyricsInput component to remove the maximum character limit validation (currently 2,000 characters), allowing users to enter unlimited lyrics text while keeping the minimum 20 character requirement",
+      "id": "REQ-38",
+      "text": "Debug and fix the library saving mechanism in App.tsx to ensure songs are correctly saved to the backend after both cover mode and generation mode processing completes",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-request"
+          "msg-current"
         ],
         "quotes": [
-          "Yes but when writing on lyrics instead of 2,000 characters make it unlimited amount of characters that the user can use in lyrics"
+          "Once the songs are famous they are not going to my library nothing is showing up in the library fix this"
         ]
       },
       "acceptanceCriteria": [
-        "The lyrics textarea accepts any number of characters without upper limit validation",
-        "The minimum 20 character requirement remains enforced",
-        "The character count display shows the current count without showing a maximum",
-        "The submit button remains enabled as long as the minimum 20 character requirement is met",
-        "No error messages appear when typing beyond the previous 2,000 character limit"
+        "After cover mode processing completes, the song appears in the Library view",
+        "After generation mode processing completes, the song appears in the Library view",
+        "The Library view correctly fetches and displays all saved songs from the backend",
+        "Songs persist in the library across page reloads"
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "text": "Verify that the backend createCover and submitLyricsRequest functions are correctly storing completed songs with all required metadata (title, artist, creation date, audio blob reference, voice sample ID)",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-current"
+        ],
+        "quotes": [
+          "Once the songs are famous they are not going to my library nothing is showing up in the library fix this"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend createCover function stores song records with complete metadata",
+        "Backend submitLyricsRequest function stores song records with complete metadata",
+        "getUserLibrary function returns all stored songs for the authenticated user",
+        "Stored songs include non-null audio blob references"
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "text": "Add error handling and logging to the library save workflow to capture and display any errors that prevent songs from being saved to the library",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-current"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Console logs show clear error messages if library save fails",
+        "User sees an error notification if a song fails to save to the library",
+        "Error messages indicate the specific failure point (backend storage, frontend state update, etc.)"
       ]
     }
   ],
   "constraints": [
-    "Keep the minimum 20 character validation requirement",
-    "Do not modify the backend LyricsRequest data model or submitLyricsRequest function"
+    "Do not change the single-actor backend architecture",
+    "Preserve the existing persona-first workflow",
+    "Maintain compatibility with existing Library component UI"
   ],
   "nonGoals": [
-    "Changing the style prompt input or keyword suggestions functionality",
-    "Modifying backend validation for lyrics length",
-    "Adding new features to the lyrics input component"
+    "Changing the Library UI design or layout",
+    "Adding new features to the library beyond fixing the save issue",
+    "Modifying the audio playback or download functionality"
   ],
   "imageRequirements": {
     "required": [],

@@ -83,20 +83,24 @@ function App() {
   };
 
   const handleProcessingComplete = (coverId: string, finalMix: ExternalBlob) => {
+    console.log('[App] Processing complete:', { coverId, workflowMode: appState.workflowMode });
+    
     setAppState(prev => ({ ...prev, coverId, finalMix }));
     
     // Navigate to Library view after processing completes
     setCurrentView('library');
-    
-    // Reset the creation workflow
-    setCurrentStep('mode');
-    setAppState({});
     
     // Show success message
     const message = appState.workflowMode === 'generation' 
       ? 'Your song is ready! Check it out in your library.' 
       : 'Your cover is ready! Check it out in your library.';
     toast.success(message);
+    
+    // Reset the creation workflow after a short delay to allow library to load
+    setTimeout(() => {
+      setCurrentStep('mode');
+      setAppState({});
+    }, 500);
   };
 
   const handleViewChange = (view: View) => {

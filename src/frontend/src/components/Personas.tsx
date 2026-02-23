@@ -13,7 +13,8 @@ interface PersonasProps {
 }
 
 export function Personas({ onPersonaSelect }: PersonasProps) {
-  const { data: personas, isLoading, error } = useVoicePersonas('user');
+  const userId = 'user'; // In production, this would come from authentication
+  const { data: personas, isLoading, error } = useVoicePersonas(userId);
   const createPersona = useCreateVoicePersona();
   const deletePersona = useDeleteVoicePersona();
   const [isCreating, setIsCreating] = useState(false);
@@ -37,7 +38,10 @@ export function Personas({ onPersonaSelect }: PersonasProps) {
     }
 
     try {
+      const personaId = `persona-${Date.now()}`;
       await createPersona.mutateAsync({
+        id: personaId,
+        userId,
         name: personaName,
         voiceSampleId,
       });
@@ -58,7 +62,7 @@ export function Personas({ onPersonaSelect }: PersonasProps) {
     }
 
     try {
-      await deletePersona.mutateAsync(personaId);
+      await deletePersona.mutateAsync({ personaId, userId });
       toast.success('Persona deleted');
     } catch (err) {
       toast.error('Failed to delete persona');

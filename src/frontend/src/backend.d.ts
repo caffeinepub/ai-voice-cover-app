@@ -29,6 +29,7 @@ export interface LyricsRequest {
     id: string;
     status: LyricsStatus;
     lyrics: string;
+    stylePrompt?: string;
     userId: string;
     generatedCoverId?: string;
     voiceSampleId: string;
@@ -74,7 +75,7 @@ export interface backendInterface {
     getCover(id: string): Promise<Cover | null>;
     getLyricsRequest(requestId: string): Promise<LyricsRequest | null>;
     getUserLibrary(userId: string): Promise<Array<Song>>;
-    submitLyricsRequest(requestId: string, userId: string, lyrics: string, voiceSampleId: string, finalMix: ExternalBlob): Promise<void>;
+    submitLyricsRequest(requestId: string, userId: string, lyrics: string, voiceSampleId: string, finalMix: ExternalBlob, stylePrompt: string | null): Promise<void>;
     uploadSong(id: string, title: string, artist: string, audioFile: ExternalBlob, instrumentalFile: ExternalBlob, voiceSampleId: string | null, modeType: ModeType): Promise<void>;
     uploadVoiceSample(id: string, userId: string, voiceFile: ExternalBlob): Promise<void>;
 }

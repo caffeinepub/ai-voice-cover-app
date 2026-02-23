@@ -53,6 +53,7 @@ export function ProcessingStatus({
       // Create a dummy final mix for the generated song
       const dummyAudioData = new Uint8Array(1024).fill(0);
       const finalMix = ExternalBlob.fromBytes(dummyAudioData);
+      // Only invoke the callback, no automatic download
       onComplete(generatedCoverId, finalMix);
     }
   }, [workflowMode, generationStatus, generatedCoverId]);
@@ -62,7 +63,7 @@ export function ProcessingStatus({
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="mb-2 text-3xl font-bold">Step 3: Processing</h2>
+        <h2 className="mb-2 text-3xl font-bold">Processing</h2>
         <p className="text-muted-foreground">
           {workflowMode === 'generation' 
             ? 'Generating your original song... This may take a minute'

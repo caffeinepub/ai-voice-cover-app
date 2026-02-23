@@ -52,6 +52,7 @@ export function useProcessingStatus() {
       try {
         await actor.createCover(coverId, songId, voiceSampleId, finalMix);
         setProgress(100);
+        // Only invoke the callback, no automatic download
         onComplete(coverId, finalMix);
       } catch (err) {
         console.error('Failed to create cover:', err);

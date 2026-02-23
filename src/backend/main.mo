@@ -4,7 +4,9 @@ import Time "mo:core/Time";
 import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
 import Iter "mo:core/Iter";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   include MixinStorage();
 
@@ -59,6 +61,7 @@ actor {
     voiceSampleId : Text;
     status : LyricsStatus;
     generatedCoverId : ?Text;
+    stylePrompt : ?Text;
   };
 
   type LyricsStatus = {
@@ -143,7 +146,7 @@ actor {
   };
 
   // Request lyrics-based song generation
-  public shared ({ caller }) func submitLyricsRequest(requestId : Text, userId : Text, lyrics : Text, voiceSampleId : Text, finalMix : Storage.ExternalBlob) : async () {
+  public shared ({ caller }) func submitLyricsRequest(requestId : Text, userId : Text, lyrics : Text, voiceSampleId : Text, finalMix : Storage.ExternalBlob, stylePrompt : ?Text) : async () {
     let request : LyricsRequest = {
       id = requestId;
       userId;
@@ -151,6 +154,7 @@ actor {
       voiceSampleId;
       status = #pending;
       generatedCoverId = null;
+      stylePrompt;
     };
     lyricsRequests.add(requestId, request);
 

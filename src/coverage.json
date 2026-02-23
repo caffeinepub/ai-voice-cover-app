@@ -1,102 +1,80 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-23T03:01:29.220Z",
+  "generatedAt": "2026-02-23T03:24:56.682Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
     "total": 5,
-    "implemented": 4,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-25",
-        "summary": "Update App.tsx workflow to allow users to select a persona from the Personas view before starting either cover mode or generation mode, then immediately navigate to the appropriate workflow (song upload for cover, lyrics input for generation) with the selected persona pre-associated",
+        "id": "REQ-32",
+        "summary": "Add a text input field to the lyrics generation workflow (GenerationMode component) where users can describe the desired music style and characteristics for their song (e.g., '808 beats with Auto-Tune and deep bass')",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/Personas.tsx",
-          "frontend/src/components/ModeSelector.tsx",
-          "frontend/src/components/SongUpload.tsx",
           "frontend/src/components/GenerationMode.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/Personas.tsx",
-          "frontend/src/components/ModeSelector.tsx",
           "frontend/src/components/GenerationMode.tsx"
         ]
       },
       {
-        "id": "REQ-26",
-        "summary": "Update backend song creation functions (createCover and createLyricsRequest) to automatically save all completed songs to the user's library without requiring manual save action",
+        "id": "REQ-33",
+        "summary": "Display suggested music style keywords (such as '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice', 'reverb', 'distortion', 'trap', 'R&B', 'pop', 'rock') as clickable tags or chips that users can click to insert into their style prompt",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/StyleKeywords.tsx",
+          "frontend/src/components/GenerationMode.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/StyleKeywords.tsx",
+          "frontend/src/components/GenerationMode.tsx"
+        ]
+      },
+      {
+        "id": "REQ-34",
+        "summary": "Update the backend LyricsRequest data model to include an optional stylePrompt field of type Text to store the user's music style description",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-27",
-        "summary": "Add social media sharing functionality to the Library component, providing buttons or menu options to share/upload songs directly to Facebook and YouTube platforms",
+        "id": "REQ-35",
+        "summary": "Update the GenerationMode component to submit the style prompt value along with lyrics when calling the backend submitLyricsRequest function",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/Library.tsx",
-          "frontend/src/components/SocialShare.tsx"
+          "frontend/src/components/GenerationMode.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/Library.tsx",
-          "frontend/src/components/SocialShare.tsx"
+          "frontend/src/components/GenerationMode.tsx"
         ]
       },
       {
-        "id": "REQ-28",
-        "summary": "Implement Facebook sharing integration that opens Facebook's share dialog with the song file and metadata (title, artist) for posting to the user's Facebook feed or page",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/SocialShare.tsx",
-          "frontend/index.html"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/SocialShare.tsx"
-        ]
-      },
-      {
-        "id": "REQ-29",
-        "summary": "Implement YouTube upload integration that allows users to upload their generated songs directly to their YouTube channel with title, description, and privacy settings",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/SocialShare.tsx",
-          "frontend/src/components/YouTubeUploadDialog.tsx",
-          "frontend/src/components/Library.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/SocialShare.tsx",
-          "frontend/src/components/YouTubeUploadDialog.tsx",
-          "frontend/src/components/Library.tsx"
-        ]
+        "id": "REQ-36",
+        "summary": "Update the backend submitLyricsRequest function to accept and store the stylePrompt parameter in the LyricsRequest record",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
-    "backend/http-outcalls/outcall.mo",
     "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
     "frontend/src/components/GenerationMode.tsx",
-    "frontend/src/components/Library.tsx",
-    "frontend/src/components/ModeSelector.tsx",
-    "frontend/src/components/Personas.tsx",
-    "frontend/src/components/SocialShare.tsx",
-    "frontend/src/components/YouTubeUploadDialog.tsx",
+    "frontend/src/components/StyleKeywords.tsx",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useQueries.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

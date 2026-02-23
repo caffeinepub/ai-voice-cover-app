@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 9,
+  "projectStateVersion": 13,
   "summary": "AI voice cover app: User uploads a song, AI applies user's voice to cover it, then mixes and masters the vocals with the song. The app must be totally free.",
   "architectural_notes": [
     "App must be completely free with no paid features or subscriptions",
@@ -186,6 +186,46 @@
         "REQ-29"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-remove-any-automatic-download-triggers-that-occur-immediately-after-song-processing-or-generation-completes-in-both-cover-mode-and-generation-mode-workflows",
+      "title": "Remove any automatic download triggers that occur immediately after song processing or generation completes in both cover mode and generation mode workflows",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-that-completed-songs-from-both-cover-and-generation-workflows-are-automatically-saved-to-the-library-and-users-are-navigated-to-the-library-view-to-access-them",
+      "title": "Ensure that completed songs from both cover and generation workflows are automatically saved to the library and users are navigated to the Library view to access them",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-text-input-field-to-the-lyrics-generation-workflow-generationmode-component-where-users-can-describe-the-desired-music-style-and-characteristics-for-their-song-e-g-808-beats-with-auto-tune-and-deep-bass",
+      "title": "Add a text input field to the lyrics generation workflow (GenerationMode component) where users can describe the desired music style and characteristics for their song (e.g., '808 beats with Auto-Tune and deep bass')",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-suggested-music-style-keywords-such-as-808-auto-tune-deep-bass-male-voice-female-voice-reverb-distortion-trap-r-b-pop-rock-as-clickable-tags-or-chips-that-users-can-click-to-insert-into-their-style-prompt",
+      "title": "Display suggested music style keywords (such as '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice', 'reverb', 'distortion', 'trap', 'R&B', 'pop', 'rock') as clickable tags or chips that users can click to insert into their style prompt",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-generationmode-component-to-submit-the-style-prompt-value-along-with-lyrics-when-calling-the-backend-submitlyricsrequest-function",
+      "title": "Update the GenerationMode component to submit the style prompt value along with lyrics when calling the backend submitLyricsRequest function",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -346,6 +386,44 @@
       "summary": "Update backend song creation functions (createCover and createLyricsRequest) to automatically save all completed songs to the user's library without requiring manual save action",
       "reqIds": [
         "REQ-26"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Remove automatic download after song completion; songs should only be saved to library until user explicitly chooses to download or upload",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Add prompt/style input box for lyrics generation mode where users can specify music style/characteristics (e.g., 808, Auto-Tune, deep bass, male voice)",
+      "reqIds": [
+        "AR-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-33",
+      "summary": "Add suggested keyword/tag UI showing common music style keywords (808, Auto-Tune, deep bass, male voice, etc.) that users can click to add to their prompt",
+      "reqIds": [
+        "AR-32"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Update the backend LyricsRequest data model to include an optional stylePrompt field of type Text to store the user's music style description",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Update the backend submitLyricsRequest function to accept and store the stylePrompt parameter in the LyricsRequest record",
+      "reqIds": [
+        "REQ-36"
       ],
       "status": "pending"
     }

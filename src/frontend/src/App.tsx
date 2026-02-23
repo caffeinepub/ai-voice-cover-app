@@ -5,17 +5,14 @@ import { VoiceInput } from './components/VoiceInput';
 import { SongUpload } from './components/SongUpload';
 import { GenerationMode } from './components/GenerationMode';
 import { ProcessingStatus } from './components/ProcessingStatus';
-import { DownloadButton } from './components/DownloadButton';
-import { FormatSelector } from './components/FormatSelector';
 import { Library } from './components/Library';
 import { Personas } from './components/Personas';
 import { ExternalBlob } from './backend';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
 
-type Step = 'mode' | 'voice' | 'song' | 'lyrics' | 'processing' | 'complete';
+type Step = 'mode' | 'voice' | 'song' | 'lyrics' | 'processing';
 type WorkflowMode = 'cover' | 'generation';
-type AudioFormat = 'mp3' | 'wav';
 type View = 'create' | 'library' | 'personas';
 
 interface AppState {
@@ -36,7 +33,6 @@ function App() {
   const [currentView, setCurrentView] = useState<View>('create');
   const [currentStep, setCurrentStep] = useState<Step>('mode');
   const [appState, setAppState] = useState<AppState>({});
-  const [audioFormat, setAudioFormat] = useState<AudioFormat>('mp3');
 
   const handleModeSelect = (mode: WorkflowMode) => {
     setAppState(prev => ({ ...prev, workflowMode: mode }));
@@ -88,14 +84,19 @@ function App() {
 
   const handleProcessingComplete = (coverId: string, finalMix: ExternalBlob) => {
     setAppState(prev => ({ ...prev, coverId, finalMix }));
-    setCurrentStep('complete');
-    toast.success(appState.workflowMode === 'generation' ? 'Your song is ready!' : 'Your cover is ready!');
-  };
-
-  const handleStartOver = () => {
-    setAppState({});
+    
+    // Navigate to Library view after processing completes
+    setCurrentView('library');
+    
+    // Reset the creation workflow
     setCurrentStep('mode');
-    setAudioFormat('mp3');
+    setAppState({});
+    
+    // Show success message
+    const message = appState.workflowMode === 'generation' 
+      ? 'Your song is ready! Check it out in your library.' 
+      : 'Your cover is ready! Check it out in your library.';
+    toast.success(message);
   };
 
   const handleViewChange = (view: View) => {
@@ -113,27 +114,23 @@ function App() {
       return hasPreselectedPersona
         ? [
             { key: 'song', label: 'Song' },
-            { key: 'processing', label: 'Processing' },
-            { key: 'complete', label: 'Download' }
+            { key: 'processing', label: 'Processing' }
           ]
         : [
             { key: 'voice', label: 'Voice' },
             { key: 'song', label: 'Song' },
-            { key: 'processing', label: 'Processing' },
-            { key: 'complete', label: 'Download' }
+            { key: 'processing', label: 'Processing' }
           ];
     } else {
       return hasPreselectedPersona
         ? [
             { key: 'lyrics', label: 'Lyrics' },
-            { key: 'processing', label: 'Processing' },
-            { key: 'complete', label: 'Download' }
+            { key: 'processing', label: 'Processing' }
           ]
         : [
             { key: 'voice', label: 'Voice' },
             { key: 'lyrics', label: 'Lyrics' },
-            { key: 'processing', label: 'Processing' },
-            { key: 'complete', label: 'Download' }
+            { key: 'processing', label: 'Processing' }
           ];
     }
   };
@@ -230,60 +227,6 @@ function App() {
                     lyricsRequestId={appState.lyricsRequestId}
                     onComplete={handleProcessingComplete}
                   />
-                )}
-                
-                {currentStep === 'complete' && appState.finalMix && (
-                  <div className="space-y-6">
-                    <div className="rounded-lg border-2 border-primary/20 bg-card p-8 text-center">
-                      <div className="mb-6">
-                        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                          <svg
-                            className="h-10 w-10 text-primary"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                        </div>
-                        <h2 className="mb-2 text-3xl font-bold">
-                          {appState.workflowMode === 'generation' ? 'Your Song is Ready!' : 'Your Cover is Ready!'}
-                        </h2>
-                        <p className="text-muted-foreground">
-                          {appState.workflowMode === 'generation'
-                            ? 'Your AI-generated song with your voice is complete'
-                            : appState.songTitle && appState.songArtist
-                            ? `"${appState.songTitle}" by ${appState.songArtist} - covered with your voice`
-                            : 'Your AI-generated voice cover is complete'}
-                        </p>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        <FormatSelector
-                          selectedFormat={audioFormat}
-                          onFormatChange={setAudioFormat}
-                        />
-                        
-                        <DownloadButton
-                          finalMix={appState.finalMix}
-                          filename={`${appState.songTitle || appState.lyrics?.slice(0, 20) || 'song'}-${appState.workflowMode}.${audioFormat}`}
-                          format={audioFormat}
-                        />
-                      </div>
-                      
-                      <button
-                        onClick={handleStartOver}
-                        className="mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Create another {appState.workflowMode === 'generation' ? 'song' : 'cover'}
-                      </button>
-                    </div>
-                  </div>
                 )}
               </div>
             </>

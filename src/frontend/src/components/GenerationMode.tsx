@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { LyricsInput } from './LyricsInput';
+import { StyleKeywords } from './StyleKeywords';
 import { useActor } from '../hooks/useActor';
 import { ExternalBlob } from '../backend';
 import { toast } from 'sonner';
 import { Sparkles } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 interface GenerationModeProps {
   voiceSampleId: string;
@@ -13,6 +16,16 @@ interface GenerationModeProps {
 export function GenerationMode({ voiceSampleId, onComplete }: GenerationModeProps) {
   const { actor } = useActor();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stylePrompt, setStylePrompt] = useState('');
+
+  const handleKeywordClick = (keyword: string) => {
+    setStylePrompt((prev) => {
+      if (prev.trim() === '') {
+        return keyword;
+      }
+      return `${prev} ${keyword}`;
+    });
+  };
 
   const handleLyricsSubmit = async (lyrics: string) => {
     if (!actor) {
@@ -31,7 +44,14 @@ export function GenerationMode({ voiceSampleId, onComplete }: GenerationModeProp
       const placeholderAudio = new Uint8Array(1024);
       const finalMix = ExternalBlob.fromBytes(placeholderAudio);
       
-      await actor.submitLyricsRequest(requestId, userId, lyrics, voiceSampleId, finalMix);
+      await actor.submitLyricsRequest(
+        requestId,
+        userId,
+        lyrics,
+        voiceSampleId,
+        finalMix,
+        stylePrompt.trim() === '' ? null : stylePrompt
+      );
       
       toast.success('Lyrics submitted! Generating your song...');
       onComplete(requestId, lyrics);
@@ -55,7 +75,32 @@ export function GenerationMode({ voiceSampleId, onComplete }: GenerationModeProp
       </div>
 
       <div className="rounded-xl border-2 border-border bg-card p-8 shadow-lg">
-        <LyricsInput onSubmit={handleLyricsSubmit} isSubmitting={isSubmitting} />
+        <div className="space-y-6">
+          {/* Style Prompt Section */}
+          <div className="space-y-3">
+            <Label htmlFor="style-prompt" className="text-base font-semibold">
+              Music Style (Optional)
+            </Label>
+            <p className="text-sm text-muted-foreground">
+              Describe how you want your music to sound. Use keywords to define the style, instruments, vocal effects, and mood.
+            </p>
+            <Textarea
+              id="style-prompt"
+              placeholder="e.g., 808 Auto-Tune deep bass trap male voice reverb upbeat"
+              value={stylePrompt}
+              onChange={(e) => setStylePrompt(e.target.value)}
+              className="min-h-[100px] resize-none"
+              disabled={isSubmitting}
+            />
+            <StyleKeywords onKeywordClick={handleKeywordClick} />
+          </div>
+
+          {/* Lyrics Input Section */}
+          <div className="space-y-3 border-t pt-6">
+            <Label className="text-base font-semibold">Your Lyrics</Label>
+            <LyricsInput onSubmit={handleLyricsSubmit} isSubmitting={isSubmitting} />
+          </div>
+        </div>
       </div>
 
       <div className="rounded-lg bg-muted/50 p-4 text-center text-sm text-muted-foreground">

@@ -104,6 +104,7 @@ export interface LyricsRequest {
     id: string;
     status: LyricsStatus;
     lyrics: string;
+    stylePrompt?: string;
     userId: string;
     generatedCoverId?: string;
     voiceSampleId: string;
@@ -166,7 +167,7 @@ export interface backendInterface {
     getCover(id: string): Promise<Cover | null>;
     getLyricsRequest(requestId: string): Promise<LyricsRequest | null>;
     getUserLibrary(userId: string): Promise<Array<Song>>;
-    submitLyricsRequest(requestId: string, userId: string, lyrics: string, voiceSampleId: string, finalMix: ExternalBlob): Promise<void>;
+    submitLyricsRequest(requestId: string, userId: string, lyrics: string, voiceSampleId: string, finalMix: ExternalBlob, stylePrompt: string | null): Promise<void>;
     uploadSong(id: string, title: string, artist: string, audioFile: ExternalBlob, instrumentalFile: ExternalBlob, voiceSampleId: string | null, modeType: ModeType): Promise<void>;
     uploadVoiceSample(id: string, userId: string, voiceFile: ExternalBlob): Promise<void>;
 }
@@ -355,17 +356,17 @@ export class Backend implements backendInterface {
             return from_candid_vec_n26(this._uploadFile, this._downloadFile, result);
         }
     }
-    async submitLyricsRequest(arg0: string, arg1: string, arg2: string, arg3: string, arg4: ExternalBlob): Promise<void> {
+    async submitLyricsRequest(arg0: string, arg1: string, arg2: string, arg3: string, arg4: ExternalBlob, arg5: string | null): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.submitLyricsRequest(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg4));
+                const result = await this.actor.submitLyricsRequest(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n27(this._uploadFile, this._downloadFile, arg5));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.submitLyricsRequest(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg4));
+            const result = await this.actor.submitLyricsRequest(arg0, arg1, arg2, arg3, await to_candid_ExternalBlob_n8(this._uploadFile, this._downloadFile, arg4), to_candid_opt_n27(this._uploadFile, this._downloadFile, arg5));
             return result;
         }
     }
@@ -441,6 +442,7 @@ function from_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uin
     id: string;
     status: _LyricsStatus;
     lyrics: string;
+    stylePrompt: [] | [string];
     userId: string;
     generatedCoverId: [] | [string];
     voiceSampleId: string;
@@ -448,6 +450,7 @@ function from_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uin
     id: string;
     status: LyricsStatus;
     lyrics: string;
+    stylePrompt?: string;
     userId: string;
     generatedCoverId?: string;
     voiceSampleId: string;
@@ -456,6 +459,7 @@ function from_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uin
         id: value.id,
         status: from_candid_LyricsStatus_n12(_uploadFile, _downloadFile, value.status),
         lyrics: value.lyrics,
+        stylePrompt: record_opt_to_undefined(from_candid_opt_n14(_uploadFile, _downloadFile, value.stylePrompt)),
         userId: value.userId,
         generatedCoverId: record_opt_to_undefined(from_candid_opt_n14(_uploadFile, _downloadFile, value.generatedCoverId)),
         voiceSampleId: value.voiceSampleId

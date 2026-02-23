@@ -1,116 +1,66 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Enable persona-based workflow with instant song creation and social media sharing",
+  "title": "Add music style prompt input with suggested keywords for lyrics generation mode",
   "requirements": [
     {
-      "id": "REQ-25",
-      "summary": "Update App.tsx workflow to allow users to select a persona from the Personas view before starting either cover mode or generation mode, then immediately navigate to the appropriate workflow with the selected persona pre-associated",
+      "id": "REQ-32",
+      "summary": "Add a text input field to the lyrics generation workflow where users can describe the desired music style and characteristics",
       "acceptanceCriteria": [
-        "User can select a persona from the Personas view",
-        "After persona selection, user is prompted to choose between cover mode and generation mode",
-        "Cover mode immediately shows song upload interface with selected persona",
-        "Generation mode immediately shows lyrics input interface with selected persona",
-        "Selected persona is automatically associated with the created song"
+        "A text input or textarea appears in the GenerationMode component alongside the lyrics input",
+        "The input has a clear label like 'Music Style' or 'Style Prompt'",
+        "Users can type free-form text describing their desired music style",
+        "The prompt value is captured in component state and can be submitted with the lyrics"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/GenerationMode.tsx",
           "operation": "modify",
-          "description": "Modify the App component to support persona-first workflow. Add state to track selected persona ID. Update navigation logic so that when a user selects a persona in the Personas view, the app prompts for mode selection (cover/generation), then navigates directly to step 2 (SongUpload for cover, GenerationMode for generation) with the selected persona pre-associated. Update the workflow state machine to preserve the selected persona throughout the creation flow and pass it to backend calls in createCover and submitLyricsRequest."
-        },
+          "description": "Add a text input field for music style prompt with a clear label ('Music Style' or 'Style Prompt'). Capture the input value in component state alongside the existing lyrics state. Position the input field near the LyricsInput component in the UI. Ensure the state is ready to be submitted with the lyrics when the user proceeds."
+        }
+      ]
+    },
+    {
+      "id": "REQ-33",
+      "summary": "Display suggested music style keywords as clickable tags that users can click to insert into their style prompt",
+      "acceptanceCriteria": [
+        "A set of keyword suggestions is displayed near the style prompt input",
+        "Keywords include at least: '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice'",
+        "Clicking a keyword inserts it into the style prompt input",
+        "Keywords are visually styled as clickable tags or chips",
+        "Multiple keywords can be added to the prompt"
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/components/Personas.tsx",
-          "operation": "modify",
-          "description": "Add persona selection capability to the Personas component. Implement click handlers on persona cards that invoke a callback (onPersonaSelect) passed from App.tsx. Update the UI to highlight or indicate when a persona is selected. Ensure the component supports both management mode (current CRUD operations) and selection mode (persona-first workflow initiation)."
-        },
-        {
-          "path": "frontend/src/components/ModeSelector.tsx",
-          "operation": "modify",
-          "description": "Update ModeSelector to support being shown after persona selection. Ensure it can accept a pre-selected persona ID as a prop and passes it along when the user selects a mode. Update the UI to indicate which persona will be used for the selected mode."
-        },
-        {
-          "path": "frontend/src/components/SongUpload.tsx",
-          "operation": "modify",
-          "description": "Update SongUpload to accept an optional pre-selected voiceSampleId prop. When this prop is provided, skip or hide the voice input step and use the pre-selected persona's voice sample ID directly when uploading the song to the backend."
+          "path": "frontend/src/components/StyleKeywords.tsx",
+          "operation": "create",
+          "description": "Create a new component that displays clickable keyword suggestions including at least: '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice', 'reverb', 'distortion', 'trap', 'R&B', 'pop', 'rock'. Style them as clickable tags or chips using Tailwind CSS classes. Accept an onKeywordClick callback prop that will be invoked with the keyword text when a user clicks a keyword. Render the keywords in a flex-wrap container for responsive display."
         },
         {
           "path": "frontend/src/components/GenerationMode.tsx",
           "operation": "modify",
-          "description": "Update GenerationMode to accept an optional pre-selected voiceSampleId prop. When provided, use this voice sample ID directly when submitting the lyrics request to the backend, bypassing any voice selection UI."
+          "description": "Import and render the StyleKeywords component near the style prompt input field. Implement a handler function that receives the clicked keyword and inserts it into the style prompt input value (appending with a space if the input is not empty). Pass this handler as the onKeywordClick prop to StyleKeywords. Ensure multiple keywords can be added sequentially to build up the prompt."
         }
       ]
     },
     {
-      "id": "REQ-27",
-      "summary": "Add social media sharing functionality to the Library component, providing buttons or menu options to share songs directly to Facebook and YouTube platforms",
+      "id": "REQ-35",
+      "summary": "Update the GenerationMode component to submit the style prompt value along with lyrics when calling the backend submitLyricsRequest function",
       "acceptanceCriteria": [
-        "Each song in Library has social sharing options",
-        "Facebook sharing option is available",
-        "YouTube upload option is available",
-        "Sharing UI clearly indicates the target platform",
-        "User can initiate sharing action from Library view"
+        "The style prompt input value is captured when the user submits lyrics",
+        "The submitLyricsRequest mutation includes the stylePrompt parameter",
+        "The prompt is passed to the backend when creating a lyrics request"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/Library.tsx",
+          "path": "frontend/src/components/GenerationMode.tsx",
           "operation": "modify",
-          "description": "Add social sharing UI to each song card in the Library. Include action buttons or a dropdown menu for Facebook sharing and YouTube upload. Position the sharing controls alongside existing play and download buttons. Wire up click handlers that invoke the sharing functions from the SocialShare component (to be created). Ensure proper visual feedback when sharing is initiated."
+          "description": "Update the submission logic to include the stylePrompt value when calling the backend submitLyricsRequest function. Pass the captured style prompt state as the stylePrompt parameter in the mutation call. If the style prompt input is empty, pass null to maintain backend compatibility with the optional field."
         },
         {
-          "path": "frontend/src/components/SocialShare.tsx",
-          "operation": "create",
-          "description": "Create a new component that encapsulates social media sharing functionality. Export functions for Facebook sharing and YouTube upload that accept song metadata (title, artist, audioFile). This component will coordinate the platform-specific sharing logic and provide UI feedback during the sharing process. Import and use this component in Library.tsx."
-        }
-      ]
-    },
-    {
-      "id": "REQ-28",
-      "summary": "Implement Facebook sharing integration that opens Facebook's share dialog with the song file and metadata for posting to the user's Facebook feed or page",
-      "acceptanceCriteria": [
-        "Clicking Facebook share button opens Facebook share interface",
-        "Song metadata (title, artist) is included in the share",
-        "User can complete the sharing flow without leaving the app unnecessarily",
-        "Error handling for failed share attempts"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/SocialShare.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Implement Facebook sharing logic in the SocialShare component. Use the Facebook SDK or Web Share API to open Facebook's share dialog with the song's direct URL (from ExternalBlob.getDirectURL()), title, and artist metadata. Handle SDK initialization, authentication if required, and error states. Provide user feedback during the sharing process and display success or error messages. Ensure the sharing flow integrates smoothly without causing unnecessary navigation away from the app."
-        },
-        {
-          "path": "frontend/index.html",
-          "operation": "modify",
-          "description": "Add Facebook SDK script tag to the HTML head if required for Facebook sharing integration. Include the necessary meta tags (og:title, og:description, og:url) placeholders that will be dynamically populated when sharing is initiated."
-        }
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "summary": "Implement YouTube upload integration that allows users to upload their generated songs directly to their YouTube channel with title, description, and privacy settings",
-      "acceptanceCriteria": [
-        "Clicking YouTube upload button initiates YouTube upload flow",
-        "User can set video title and description",
-        "User can choose privacy settings (public, unlisted, private)",
-        "Upload progress is displayed",
-        "Success/failure feedback is provided"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/SocialShare.tsx",
-          "operation": "modify",
-          "description": "Implement YouTube upload logic in the SocialShare component. Use the YouTube Data API to upload songs as audio-only videos. Implement OAuth2 authentication flow for YouTube access. Provide a UI for users to set video title (defaulting to song title), description (defaulting to artist info), and privacy settings (public/unlisted/private). Track and display upload progress using the API's resumable upload features. Handle authentication errors, quota limits, and upload failures with appropriate user feedback."
-        },
-        {
-          "path": "frontend/src/components/YouTubeUploadDialog.tsx",
-          "operation": "create",
-          "description": "Create a dialog component for YouTube upload configuration. Include form fields for video title, description, and privacy settings (radio buttons or dropdown). Display upload progress with a progress bar and percentage. Show success or error messages upon completion. Accept song data as props and invoke the YouTube upload function from SocialShare when the user confirms. Use shadcn/ui Dialog component for consistent styling."
-        },
-        {
-          "path": "frontend/src/components/Library.tsx",
-          "operation": "modify",
-          "description": "Wire the YouTubeUploadDialog into the Library component. Add state management to track which song is being uploaded and whether the dialog is open. Pass the selected song's data to YouTubeUploadDialog when the user clicks the YouTube upload button. Handle dialog open/close states and refresh the UI after successful uploads."
+          "description": "Update the submitLyricsRequest mutation to accept a stylePrompt parameter and pass it to the backend actor's submitLyricsRequest function. Ensure the parameter is typed as string | null to match the backend interface signature. The mutation should forward the stylePrompt value received from the GenerationMode component to the backend."
         }
       ]
     }

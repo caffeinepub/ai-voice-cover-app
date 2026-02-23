@@ -21,6 +21,7 @@ export interface LyricsRequest {
   'id' : string,
   'status' : LyricsStatus,
   'lyrics' : string,
+  'stylePrompt' : [] | [string],
   'userId' : string,
   'generatedCoverId' : [] | [string],
   'voiceSampleId' : string,
@@ -93,7 +94,7 @@ export interface _SERVICE {
   'getLyricsRequest' : ActorMethod<[string], [] | [LyricsRequest]>,
   'getUserLibrary' : ActorMethod<[string], Array<Song>>,
   'submitLyricsRequest' : ActorMethod<
-    [string, string, string, string, ExternalBlob],
+    [string, string, string, string, ExternalBlob, [] | [string]],
     undefined
   >,
   'uploadSong' : ActorMethod<

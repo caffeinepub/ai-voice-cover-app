@@ -1,119 +1,101 @@
 {
   "kind": "build_request",
-  "title": "Enable persona-based workflow with instant song creation and social media sharing",
-  "projectName": "AI Voice Cover Studio",
+  "title": "Add music style prompt input with suggested keywords for lyrics generation mode",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-25",
-      "text": "Update App.tsx workflow to allow users to select a persona from the Personas view before starting either cover mode or generation mode, then immediately navigate to the appropriate workflow (song upload for cover, lyrics input for generation) with the selected persona pre-associated",
+      "id": "REQ-32",
+      "text": "Add a text input field to the lyrics generation workflow (GenerationMode component) where users can describe the desired music style and characteristics for their song (e.g., '808 beats with Auto-Tune and deep bass')",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-user-final"
         ],
         "quotes": [
-          "Make it to where you can choose a persona and instantly upload a song to cover or write your own lyrics for that persona to create a song"
+          "give it a prompt box for users to insert their own prompts of how they want the music to sign"
         ]
       },
       "acceptanceCriteria": [
-        "User can select a persona from the Personas view",
-        "After persona selection, user is prompted to choose between cover mode and generation mode",
-        "Cover mode immediately shows song upload interface with selected persona",
-        "Generation mode immediately shows lyrics input interface with selected persona",
-        "Selected persona is automatically associated with the created song"
+        "A text input or textarea appears in the GenerationMode component alongside the lyrics input",
+        "The input has a clear label like 'Music Style' or 'Style Prompt'",
+        "Users can type free-form text describing their desired music style",
+        "The prompt value is captured in component state and can be submitted with the lyrics"
       ]
     },
     {
-      "id": "REQ-26",
-      "text": "Update backend song creation functions (createCover and createLyricsRequest) to automatically save all completed songs to the user's library without requiring manual save action",
+      "id": "REQ-33",
+      "text": "Display suggested music style keywords (such as '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice', 'reverb', 'distortion', 'trap', 'R&B', 'pop', 'rock') as clickable tags or chips that users can click to insert into their style prompt",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-final"
+        ],
+        "quotes": [
+          "suggest keywords that they should use like 808 Auto-Tune deep face male voice etc"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A set of keyword suggestions is displayed near the style prompt input",
+        "Keywords include at least: '808', 'Auto-Tune', 'deep bass', 'male voice', 'female voice'",
+        "Clicking a keyword inserts it into the style prompt input",
+        "Keywords are visually styled as clickable tags or chips",
+        "Multiple keywords can be added to the prompt"
+      ]
+    },
+    {
+      "id": "REQ-34",
+      "text": "Update the backend LyricsRequest data model to include an optional stylePrompt field of type Text to store the user's music style description",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "Save all created songs to the library automatically"
+          "msg-user-final"
         ]
       },
       "acceptanceCriteria": [
-        "All songs created via cover workflow are automatically added to library",
-        "All songs created via generation workflow are automatically added to library",
-        "No manual save action is required from the user",
-        "Songs appear in Library view immediately after processing completes"
+        "The LyricsRequest type in backend/main.mo includes a stylePrompt field",
+        "The field is optional (e.g., ?Text) to maintain backward compatibility",
+        "Existing lyrics requests without stylePrompt continue to function"
       ]
     },
     {
-      "id": "REQ-27",
-      "text": "Add social media sharing functionality to the Library component, providing buttons or menu options to share/upload songs directly to Facebook and YouTube platforms",
+      "id": "REQ-35",
+      "text": "Update the GenerationMode component to submit the style prompt value along with lyrics when calling the backend submitLyricsRequest function",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "also to upload songs to different platforms like Facebook YouTube etc"
+          "msg-user-final"
         ]
       },
       "acceptanceCriteria": [
-        "Each song in Library has social sharing options",
-        "Facebook sharing option is available",
-        "YouTube upload option is available",
-        "Sharing UI clearly indicates the target platform",
-        "User can initiate sharing action from Library view"
+        "The style prompt input value is captured when the user submits lyrics",
+        "The submitLyricsRequest mutation includes the stylePrompt parameter",
+        "The prompt is passed to the backend when creating a lyrics request"
       ]
     },
     {
-      "id": "REQ-28",
-      "text": "Implement Facebook sharing integration that opens Facebook's share dialog with the song file and metadata (title, artist) for posting to the user's Facebook feed or page",
-      "target": "frontend",
+      "id": "REQ-36",
+      "text": "Update the backend submitLyricsRequest function to accept and store the stylePrompt parameter in the LyricsRequest record",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "upload songs to different platforms like Facebook YouTube etc"
+          "msg-user-final"
         ]
       },
       "acceptanceCriteria": [
-        "Clicking Facebook share button opens Facebook share interface",
-        "Song metadata (title, artist) is included in the share",
-        "User can complete the sharing flow without leaving the app unnecessarily",
-        "Error handling for failed share attempts"
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "text": "Implement YouTube upload integration that allows users to upload their generated songs directly to their YouTube channel with title, description, and privacy settings",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "upload songs to different platforms like Facebook YouTube etc"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Clicking YouTube upload button initiates YouTube upload flow",
-        "User can set video title and description",
-        "User can choose privacy settings (public, unlisted, private)",
-        "Upload progress is displayed",
-        "Success/failure feedback is provided"
+        "The submitLyricsRequest function signature accepts a stylePrompt parameter",
+        "The stylePrompt is stored in the LyricsRequest record when created",
+        "If no prompt is provided, the field is stored as null or empty"
       ]
     }
   ],
   "constraints": [
-    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui",
-    "Maintain single-actor backend architecture with all logic in backend/main.mo",
-    "Preserve existing data models for songs, personas, covers, and lyrics requests",
-    "Keep all songs automatically saved to library as specified in existing workflow"
+    "Do not modify the single-actor architecture in backend/main.mo",
+    "Do not edit read-only files in frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui"
   ],
   "nonGoals": [
-    "Adding support for additional social media platforms beyond Facebook and YouTube",
-    "Implementing real-time collaborative editing features",
-    "Adding authentication beyond existing Internet Identity integration",
-    "Creating separate backend microservices or external API integrations"
+    "Implementing actual AI music generation logic (simulation only)",
+    "Integrating with external music generation APIs",
+    "Advanced prompt validation or NLP processing"
   ],
   "imageRequirements": {
     "required": [],

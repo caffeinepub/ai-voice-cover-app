@@ -1,0 +1,357 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 9,
+  "summary": "AI voice cover app: User uploads a song, AI applies user's voice to cover it, then mixes and masters the vocals with the song. The app must be totally free.",
+  "architectural_notes": [
+    "App must be completely free with no paid features or subscriptions",
+    "Requires AI voice cloning/synthesis capability",
+    "Needs audio processing pipeline for mixing and mastering",
+    "Must handle audio file uploads (likely MP3, WAV formats)",
+    "Must support multiple export formats (MP3, WAV)",
+    "Requires AI music composition/generation capability for creating songs from lyrics",
+    "Needs text input processing for lyrics",
+    "Requires local storage or database for song library persistence",
+    "Needs persona management system to store multiple voice profiles",
+    "Requires audio player component for in-app playback"
+  ],
+  "known_issues": [
+    "Downloaded audio files do not play correctly"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-implement-voice-recording-feature-allowing-users-to-record-their-voice-samples-directly-in-the-browser-using-the-web-audio-api",
+      "title": "Implement voice recording feature allowing users to record their voice samples directly in the browser using the Web Audio API",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-voice-upload-feature-allowing-users-to-upload-pre-recorded-voice-samples-in-common-audio-formats-mp3-wav-m4a",
+      "title": "Implement voice upload feature allowing users to upload pre-recorded voice samples in common audio formats (MP3, WAV, M4A)",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-song-upload-feature-allowing-users-to-upload-songs-in-common-audio-formats-mp3-wav-m4a-that-will-be-covered",
+      "title": "Implement song upload feature allowing users to upload songs in common audio formats (MP3, WAV, M4A) that will be covered",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-export-and-download-feature-allowing-users-to-download-the-final-mixed-and-mastered-track",
+      "title": "Implement export and download feature allowing users to download the final mixed and mastered track",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-processing-status-ui-showing-real-time-progress-for-voice-analysis-vocal-synthesis-mixing-and-mastering-stages",
+      "title": "Implement processing status UI showing real-time progress for voice analysis, vocal synthesis, mixing, and mastering stages",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-design-a-creative-coherent-visual-theme-with-a-modern-music-production-aesthetic-featuring-warm-gradients-dynamic-waveform-visualizations-and-clean-typography-that-emphasizes-the-professional-audio-processing-capabilities",
+      "title": "Design a creative, coherent visual theme with a modern music production aesthetic featuring warm gradients, dynamic waveform visualizations, and clean typography that emphasizes the professional audio processing capabilities",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-format-selection-ui-mp3-or-wav-to-the-download-interface-allowing-users-to-choose-their-preferred-audio-format-before-downloading-the-final-track",
+      "title": "Add format selection UI (MP3 or WAV) to the download interface, allowing users to choose their preferred audio format before downloading the final track",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-downloadbutton-component-to-support-downloading-in-either-mp3-or-wav-format-based-on-user-selection-converting-the-audio-blob-accordingly",
+      "title": "Update DownloadButton component to support downloading in either MP3 or WAV format based on user selection, converting the audio blob accordingly",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-lyrics-input-ui-component-allowing-users-to-type-or-paste-song-lyrics-into-a-text-area-with-character-count-and-validation",
+      "title": "Create lyrics input UI component allowing users to type or paste song lyrics into a text area with character count and validation",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-full-song-generation-workflow-that-accepts-user-lyrics-and-voice-sample-then-generates-a-complete-song-with-music-and-vocals-using-the-user-s-voice-characteristics",
+      "title": "Implement full song generation workflow that accepts user lyrics and voice sample, then generates a complete song with music and vocals using the user's voice characteristics",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-application-workflow-to-support-two-modes-cover-mode-upload-existing-song-and-generation-mode-create-song-from-lyrics-with-appropriate-ui-navigation-and-state-management",
+      "title": "Update application workflow to support two modes: cover mode (upload existing song) and generation mode (create song from lyrics), with appropriate UI navigation and state management",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-frontend-library-component-displaying-all-saved-songs-in-a-grid-or-list-view-with-song-title-artist-creation-date-and-thumbnail-waveform-visualization",
+      "title": "Create frontend Library component displaying all saved songs in a grid or list view with song title, artist, creation date, and thumbnail/waveform visualization",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-frontend-personas-component-allowing-users-to-create-name-view-and-delete-voice-personas-with-ui-to-select-a-persona-when-starting-a-new-song-creation-workflow",
+      "title": "Create frontend Personas component allowing users to create, name, view, and delete voice personas, with UI to select a persona when starting a new song creation workflow",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-in-app-audio-playback-component-with-play-pause-controls-progress-bar-and-volume-control-for-playing-completed-songs-directly-in-the-browser",
+      "title": "Implement in-app audio playback component with play/pause controls, progress bar, and volume control for playing completed songs directly in the browser",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-library-component-to-include-both-play-and-download-actions-for-each-song-integrating-the-audio-player-and-existing-downloadbutton-component",
+      "title": "Update Library component to include both play and download actions for each song, integrating the audio player and existing DownloadButton component",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-app-tsx-workflow-to-integrate-library-and-personas-navigation-allowing-users-to-access-library-view-and-manage-personas-from-the-main-interface",
+      "title": "Update App.tsx workflow to integrate library and personas navigation, allowing users to access library view and manage personas from the main interface",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-audio-playback-issue-causing-downloaded-files-to-not-play-correctly-by-ensuring-proper-audio-encoding-and-mime-type-settings-in-downloadbutton-component",
+      "title": "Fix audio playback issue causing downloaded files to not play correctly by ensuring proper audio encoding and MIME type settings in DownloadButton component",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-app-tsx-workflow-to-allow-users-to-select-a-persona-from-the-personas-view-before-starting-either-cover-mode-or-generation-mode-then-immediately-navigate-to-the-appropriate-workflow-song-upload-for-cover-lyrics-input-for-generation-with-the-selected-persona-pre-associated",
+      "title": "Update App.tsx workflow to allow users to select a persona from the Personas view before starting either cover mode or generation mode, then immediately navigate to the appropriate workflow (song upload for cover, lyrics input for generation) with the selected persona pre-associated",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-social-media-sharing-functionality-to-the-library-component-providing-buttons-or-menu-options-to-share-upload-songs-directly-to-facebook-and-youtube-platforms",
+      "title": "Add social media sharing functionality to the Library component, providing buttons or menu options to share/upload songs directly to Facebook and YouTube platforms",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-facebook-sharing-integration-that-opens-facebook-s-share-dialog-with-the-song-file-and-metadata-title-artist-for-posting-to-the-user-s-facebook-feed-or-page",
+      "title": "Implement Facebook sharing integration that opens Facebook's share dialog with the song file and metadata (title, artist) for posting to the user's Facebook feed or page",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-youtube-upload-integration-that-allows-users-to-upload-their-generated-songs-directly-to-their-youtube-channel-with-title-description-and-privacy-settings",
+      "title": "Implement YouTube upload integration that allows users to upload their generated songs directly to their YouTube channel with title, description, and privacy settings",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Voice recording/upload feature to capture user's voice",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Song upload feature to accept audio files",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "AI voice synthesis to apply user's voice to the uploaded song",
+      "reqIds": [
+        "AR-1",
+        "AR-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Mixing and mastering feature to blend AI-generated vocals with the song",
+      "reqIds": [
+        "AR-3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Export/download feature for the final mixed track",
+      "reqIds": [
+        "AR-4"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Implement AI voice synthesis backend logic that analyzes the user's voice sample and applies voice characteristics to cover the uploaded song's vocals",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Implement mixing and mastering backend logic that blends the AI-generated vocals with the instrumental track of the uploaded song",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Allow users to choose MP3 or WAV format when downloading the final track",
+      "reqIds": [
+        "AR-5"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Add lyrics input feature allowing users to type in lyrics",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Implement full song generation from user-provided lyrics using the user's voice (AI music composition)",
+      "reqIds": [
+        "AR-1",
+        "AR-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Add backend data model to store user-provided lyrics as text associated with a cover or song generation request",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Add backend function to handle lyrics-based song generation requests, storing the request parameters (voice sample ID, lyrics text) and returning a generated cover ID",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Create in-app library to store all generated/covered songs",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Implement persona system to save multiple voice profiles with different voices",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Add in-app audio playback feature for completed songs in the library",
+      "reqIds": [
+        "AR-21"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Create backend data model to store a library of all generated and covered songs, including metadata (title, artist, creation date, mode type), associated voice sample ID, and audio blob reference",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Create backend data model for voice personas, allowing users to save multiple voice profiles with names and associated voice sample IDs",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Update backend song creation functions (both cover and generation workflows) to automatically add completed songs to the user's library upon successful processing",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Integrate persona selection with cover and generation workflows so users choose a persona before uploading a song or writing lyrics",
+      "reqIds": [
+        "AR-22"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Add social media sharing/upload functionality to library, allowing users to upload songs directly to Facebook, YouTube, and other platforms",
+      "reqIds": [
+        "AR-21"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Update backend song creation functions (createCover and createLyricsRequest) to automatically save all completed songs to the user's library without requiring manual save action",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "AI Voice Cover App",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

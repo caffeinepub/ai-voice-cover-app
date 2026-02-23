@@ -1,0 +1,122 @@
+{
+  "kind": "build_request",
+  "title": "Enable persona-based workflow with instant song creation and social media sharing",
+  "projectName": "AI Voice Cover Studio",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-25",
+      "text": "Update App.tsx workflow to allow users to select a persona from the Personas view before starting either cover mode or generation mode, then immediately navigate to the appropriate workflow (song upload for cover, lyrics input for generation) with the selected persona pre-associated",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Make it to where you can choose a persona and instantly upload a song to cover or write your own lyrics for that persona to create a song"
+        ]
+      },
+      "acceptanceCriteria": [
+        "User can select a persona from the Personas view",
+        "After persona selection, user is prompted to choose between cover mode and generation mode",
+        "Cover mode immediately shows song upload interface with selected persona",
+        "Generation mode immediately shows lyrics input interface with selected persona",
+        "Selected persona is automatically associated with the created song"
+      ]
+    },
+    {
+      "id": "REQ-26",
+      "text": "Update backend song creation functions (createCover and createLyricsRequest) to automatically save all completed songs to the user's library without requiring manual save action",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Save all created songs to the library automatically"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All songs created via cover workflow are automatically added to library",
+        "All songs created via generation workflow are automatically added to library",
+        "No manual save action is required from the user",
+        "Songs appear in Library view immediately after processing completes"
+      ]
+    },
+    {
+      "id": "REQ-27",
+      "text": "Add social media sharing functionality to the Library component, providing buttons or menu options to share/upload songs directly to Facebook and YouTube platforms",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "also to upload songs to different platforms like Facebook YouTube etc"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Each song in Library has social sharing options",
+        "Facebook sharing option is available",
+        "YouTube upload option is available",
+        "Sharing UI clearly indicates the target platform",
+        "User can initiate sharing action from Library view"
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "text": "Implement Facebook sharing integration that opens Facebook's share dialog with the song file and metadata (title, artist) for posting to the user's Facebook feed or page",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "upload songs to different platforms like Facebook YouTube etc"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking Facebook share button opens Facebook share interface",
+        "Song metadata (title, artist) is included in the share",
+        "User can complete the sharing flow without leaving the app unnecessarily",
+        "Error handling for failed share attempts"
+      ]
+    },
+    {
+      "id": "REQ-29",
+      "text": "Implement YouTube upload integration that allows users to upload their generated songs directly to their YouTube channel with title, description, and privacy settings",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "upload songs to different platforms like Facebook YouTube etc"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking YouTube upload button initiates YouTube upload flow",
+        "User can set video title and description",
+        "User can choose privacy settings (public, unlisted, private)",
+        "Upload progress is displayed",
+        "Success/failure feedback is provided"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui",
+    "Maintain single-actor backend architecture with all logic in backend/main.mo",
+    "Preserve existing data models for songs, personas, covers, and lyrics requests",
+    "Keep all songs automatically saved to library as specified in existing workflow"
+  ],
+  "nonGoals": [
+    "Adding support for additional social media platforms beyond Facebook and YouTube",
+    "Implementing real-time collaborative editing features",
+    "Adding authentication beyond existing Internet Identity integration",
+    "Creating separate backend microservices or external API integrations"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-app-tsx-workflow-to-allow-users-to-select-a-persona-from-the-personas-view-before-starting-either-cover-mode-or-generation-mode-then-immediately-navigate-to-the-appropriate-workflow-song-upload-for-cover-lyrics-input-for-generation-with-the-selected-persona-pre-associated",
+      "featureTitle": "Update App.tsx workflow to allow users to select a persona from the Personas view before starting either cover mode or generation mode, then immediately navigate to the appropriate workflow (song upload for cover, lyrics input for generation) with the selected persona pre-associated",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/GenerationMode.tsx",
+        "frontend/src/components/ModeSelector.tsx",
+        "frontend/src/components/Personas.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-25"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-social-media-sharing-functionality-to-the-library-component-providing-buttons-or-menu-options-to-share-upload-songs-directly-to-facebook-and-youtube-platforms",
+      "featureTitle": "Add social media sharing functionality to the Library component, providing buttons or menu options to share/upload songs directly to Facebook and YouTube platforms",
+      "files": [
+        "frontend/src/components/Library.tsx",
+        "frontend/src/components/SocialShare.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-27"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-facebook-sharing-integration-that-opens-facebook-s-share-dialog-with-the-song-file-and-metadata-title-artist-for-posting-to-the-user-s-facebook-feed-or-page",
+      "featureTitle": "Implement Facebook sharing integration that opens Facebook's share dialog with the song file and metadata (title, artist) for posting to the user's Facebook feed or page",
+      "files": [
+        "frontend/src/components/SocialShare.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-28"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-youtube-upload-integration-that-allows-users-to-upload-their-generated-songs-directly-to-their-youtube-channel-with-title-description-and-privacy-settings",
+      "featureTitle": "Implement YouTube upload integration that allows users to upload their generated songs directly to their YouTube channel with title, description, and privacy settings",
+      "files": [
+        "frontend/src/components/Library.tsx",
+        "frontend/src/components/SocialShare.tsx",
+        "frontend/src/components/YouTubeUploadDialog.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "http-outcalls@3.0.0"
+      ],
+      "testIds": [
+        "REQ-29"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
